@@ -7,12 +7,6 @@ import {
   ActiveTab,
   CategoryIconName,
 } from '../types';
-import {
-  INITIAL_CARDS,
-  INITIAL_SUBACCOUNTS,
-  INITIAL_TRANSACTIONS,
-  INITIAL_INCOME_SOURCES,
-} from '../data/initialData';
 import { getTodayDateString } from '../utils/formatters';
 import { supabase, hasSupabaseConfig } from '../utils/supabase';
 
@@ -106,19 +100,9 @@ interface FinanceContextType {
   deleteIncomeSource: (sourceId: string) => void;
   toggleIncomeSourceActive: (sourceId: string) => void;
 
-  resetToDemoData: () => void;
 }
 
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
-
-const STORAGE_KEYS = {
-  CARDS: 'financas_angola_cards_v1',
-  SUBACCOUNTS: 'financas_angola_subaccounts_v1',
-  TRANSACTIONS: 'financas_angola_transactions_v1',
-  INCOME_SOURCES: 'financas_angola_income_sources_v1',
-  HIDE_BALANCES: 'financas_angola_hide_balances_v1',
-  THEME_DARK: 'financas_angola_theme_dark_v1',
-};
 
 const TABLES_TO_SYNC = {
   cards: 'cards',
@@ -141,77 +125,25 @@ const syncRowsToSupabase = async <T,>(tableName: keyof typeof TABLES_TO_SYNC, ro
 
 export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Theme state
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.THEME_DARK);
-      return saved !== null ? JSON.parse(saved) : false;
-    } catch {
-      return false;
-    }
-  });
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   const toggleDarkMode = () => {
     setIsDarkMode((prev) => !prev);
   };
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.THEME_DARK, JSON.stringify(isDarkMode));
-      if (isDarkMode) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    } catch {
-      // ignore
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
     }
   }, [isDarkMode]);
 
-  // Load state from localStorage with fallback to initialData
-  const [cards, setCards] = useState<BankCard[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.CARDS);
-      return saved ? JSON.parse(saved) : INITIAL_CARDS;
-    } catch {
-      return INITIAL_CARDS;
-    }
-  });
-
-  const [subaccounts, setSubaccounts] = useState<Subaccount[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.SUBACCOUNTS);
-      return saved ? JSON.parse(saved) : INITIAL_SUBACCOUNTS;
-    } catch {
-      return INITIAL_SUBACCOUNTS;
-    }
-  });
-
-  const [transactions, setTransactions] = useState<Transaction[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.TRANSACTIONS);
-      return saved ? JSON.parse(saved) : INITIAL_TRANSACTIONS;
-    } catch {
-      return INITIAL_TRANSACTIONS;
-    }
-  });
-
-  const [incomeSources, setIncomeSources] = useState<IncomeSource[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.INCOME_SOURCES);
-      return saved ? JSON.parse(saved) : INITIAL_INCOME_SOURCES;
-    } catch {
-      return INITIAL_INCOME_SOURCES;
-    }
-  });
-
-  const [hideBalances, setHideBalances] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.HIDE_BALANCES);
-      return saved ? JSON.parse(saved) : false;
-    } catch {
-      return false;
-    }
-  });
+  const [cards, setCards] = useState<BankCard[]>([]);
+  const [subaccounts, setSubaccounts] = useState<Subaccount[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [incomeSources, setIncomeSources] = useState<IncomeSource[]>([]);
+  const [hideBalances, setHideBalances] = useState<boolean>(false);
 
   const [supabaseInitialized, setSupabaseInitialized] = useState(false);
 
@@ -299,27 +231,6 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [preselectedAddSubaccountCardId, setPreselectedAddSubaccountCardId] = useState<string | null>(null);
   const [isAddIncomeSourceOpen, setIsAddIncomeSourceOpen] = useState<boolean>(false);
   const [editingIncomeSource, setEditingIncomeSource] = useState<IncomeSource | null>(null);
-
-  // Save to localStorage
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.CARDS, JSON.stringify(cards));
-  }, [cards]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.SUBACCOUNTS, JSON.stringify(subaccounts));
-  }, [subaccounts]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(transactions));
-  }, [transactions]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.INCOME_SOURCES, JSON.stringify(incomeSources));
-  }, [incomeSources]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.HIDE_BALANCES, JSON.stringify(hideBalances));
-  }, [hideBalances]);
 
   // Keep selected index within bounds
   useEffect(() => {
@@ -599,20 +510,6 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     );
   };
 
-  const resetToDemoData = () => {
-    setCards(INITIAL_CARDS);
-    setSubaccounts(INITIAL_SUBACCOUNTS);
-    setTransactions(INITIAL_TRANSACTIONS);
-    setIncomeSources(INITIAL_INCOME_SOURCES);
-    setSelectedCardIndex(0);
-    setCardDetailId(null);
-    setSubaccountDetailId(null);
-    localStorage.removeItem(STORAGE_KEYS.CARDS);
-    localStorage.removeItem(STORAGE_KEYS.SUBACCOUNTS);
-    localStorage.removeItem(STORAGE_KEYS.TRANSACTIONS);
-    localStorage.removeItem(STORAGE_KEYS.INCOME_SOURCES);
-  };
-
   return (
     <FinanceContext.Provider
       value={{
@@ -672,7 +569,6 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         updateIncomeSource,
         deleteIncomeSource,
         toggleIncomeSourceActive,
-        resetToDemoData,
       }}
     >
       {children}
