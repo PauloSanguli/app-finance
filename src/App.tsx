@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FinanceProvider, useFinance } from './context/FinanceContext';
 import { Header } from './components/Header';
 import { CardCarousel } from './components/CardCarousel';
@@ -31,6 +31,15 @@ import {
   formatDatePT,
   getCategoryIcon,
 } from './utils/formatters';
+import { supabase, hasSupabaseConfig } from './utils/supabase';
+
+const SUPABASE_EXAMPLE_LIMIT = 5;
+
+type SupabaseTodo = {
+  id: number;
+  name: string;
+  created_at?: string;
+};
 
 const HomeScreenContent: React.FC = () => {
   const {
@@ -46,11 +55,61 @@ const HomeScreenContent: React.FC = () => {
     hideBalances,
   } = useFinance();
 
+  const [supabaseRows, setSupabaseRows] = useState<SupabaseTodo[]>([]);
+  const [supabaseStatus, setSupabaseStatus] = useState<string>(
+    hasSupabaseConfig ? 'Supabase conectado' : 'Supabase não configurado'
+  );
+
+  useEffect(() => {
+    if (!supabase) {
+      setSupabaseStatus('Supabase não configurado');
+      return;
+    }
+
+    const loadTodos = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('todos')
+          .select('*')
+          .limit(SUPABASE_EXAMPLE_LIMIT);
+
+        if (error) {
+          if (error.code === '42P01') {
+            setSupabaseStatus('Supabase pronto — tabela "todos" ainda não existe');
+            return;
+          }
+
+          throw error;
+        }
+
+        setSupabaseRows((data as SupabaseTodo[]) ?? []);
+        setSupabaseStatus(data && data.length > 0 ? 'Supabase carregado com sucesso' : 'Supabase conectado e sem dados');
+      } catch (err) {
+        console.error('Supabase query failed:', err);
+        setSupabaseStatus('Supabase configurado, mas a query falhou');
+      }
+    };
+
+    void loadTodos();
+  }, []);
+
   const cardSubaccounts = currentCard ? getSubaccountsByCardId(currentCard.id) : [];
   const recentTransactions = transactions.slice(0, 5);
 
   return (
     <div className="pb-28">
+      {hasSupabaseConfig && (
+        <div className="px-5 pt-3">
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50/80 px-3 py-2 text-[11px] font-medium text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300">
+            {supabaseStatus}
+            {supabaseRows.length > 0 && (
+              <span className="ml-2 font-bold">
+                • {supabaseRows.length} registo(s) lidos
+              </span>
+            )}
+          </div>
+        </div>
+      )}
       {/* 1. Bank Card Carousel with Pagination Dots */}
       <CardCarousel />
 
