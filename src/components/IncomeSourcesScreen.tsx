@@ -115,7 +115,7 @@ export const IncomeSourcesScreen: React.FC = () => {
                         className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-2xs border ${
                           source.active
                             ? 'bg-emerald-100/90 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200/80 dark:border-emerald-800/60'
-                            : 'bg-slate-200/80 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-300/80 dark:border-slate-700'
+                            : 'bg-amber-50/80 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-amber-200/80 dark:border-slate-700'
                         }`}
                       >
                         <Wallet size={20} />
@@ -125,7 +125,7 @@ export const IncomeSourcesScreen: React.FC = () => {
                           {source.name}
                         </h3>
                         <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                          <span className="font-medium px-2 py-0.5 rounded-md bg-slate-100/90 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-bold border border-slate-200/60 dark:border-slate-700">
+                          <span className="font-medium px-2 py-0.5 rounded-md bg-amber-50/90 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-bold border border-amber-200/60 dark:border-slate-700">
                             {source.frequency}
                           </span>
                           {source.receivingDay && (

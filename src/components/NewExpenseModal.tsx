@@ -287,7 +287,7 @@ export const NewExpenseModal: React.FC = () => {
                             className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md ${
                               isSelected
                                 ? 'bg-white/20 dark:bg-slate-950/20 text-white dark:text-slate-950'
-                                : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200'
+                                : 'bg-amber-50 dark:bg-slate-700 text-slate-800 dark:text-slate-200'
                             }`}
                           >
                             {card.bankId === 'OUTRO' ? card.customBankName || 'Outro' : bStyle.shortName}
@@ -505,7 +505,7 @@ export const NewExpenseModal: React.FC = () => {
               className={`w-full py-3.5 px-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all ${
                 numericAmount > 0 && selectedSubId
                   ? 'bg-rose-600 hover:bg-rose-700 text-white cursor-pointer'
-                  : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
+                  : 'bg-amber-50 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
               }`}
             >
               <Check size={18} className="stroke-[3]" />

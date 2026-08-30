@@ -70,7 +70,7 @@ export const SubaccountDetailModal: React.FC = () => {
   let statusText = 'Saldo Disponível';
 
   if (balance === 0) {
-    statusColor = 'text-slate-600 dark:text-slate-400 bg-slate-100/90 dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700';
+    statusColor = 'text-slate-600 dark:text-slate-400 bg-amber-50/90 dark:bg-slate-800/90 border-amber-200/80 dark:border-slate-700';
     statusDot = 'bg-slate-400';
     statusText = 'Envelope Vazio';
   } else if (balance < 0) {
@@ -203,7 +203,7 @@ export const SubaccountDetailModal: React.FC = () => {
             </h4>
 
             {/* Filter tabs */}
-            <div className="flex bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-xs p-0.5 rounded-xl text-xs font-semibold border border-slate-200/60 dark:border-slate-700">
+            <div className="flex bg-amber-50/80 dark:bg-slate-800/80 backdrop-blur-xs p-0.5 rounded-xl text-xs font-semibold border border-amber-200/60 dark:border-slate-700">
               <button
                 onClick={() => setFilterType('ALL')}
                 className={`px-2.5 py-1 rounded-lg transition-colors ${

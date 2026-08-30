@@ -169,7 +169,7 @@ export const CardDetailModal: React.FC = () => {
                   let stateLabel = 'Disponível';
 
                   if (subBal === 0) {
-                    stateBg = 'bg-slate-100/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-400 border-slate-200/80 dark:border-slate-700';
+                    stateBg = 'bg-amber-50/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-400 border-amber-200/80 dark:border-slate-700';
                     stateDot = 'bg-slate-400';
                     stateLabel = 'Vazio';
                   } else if (subBal < 0) {

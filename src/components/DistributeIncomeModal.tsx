@@ -474,7 +474,7 @@ export const DistributeIncomeModal: React.FC = () => {
               className={`w-full py-3.5 px-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all ${
                 totalReceived > 0 && totalDistributed > 0
                   ? 'bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer'
-                  : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
+                  : 'bg-amber-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
               }`}
             >
               <Check size={18} className="stroke-[3]" />
