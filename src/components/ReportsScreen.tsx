@@ -95,7 +95,7 @@ export const ReportsScreen: React.FC = () => {
           <button
             onClick={handlePrevMonth}
             aria-label="Mês anterior"
-            className="p-1.5 rounded-xl hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 active:scale-95 transition-all"
+            className="p-1.5 rounded-xl hover:bg-amber-50 dark:hover:bg-slate-800/90 hover:text-amber-700 dark:hover:text-amber-300 text-slate-700 dark:text-slate-300 active:scale-95 transition-all"
           >
             <ChevronLeft size={14} />
           </button>
@@ -105,7 +105,7 @@ export const ReportsScreen: React.FC = () => {
           <button
             onClick={handleNextMonth}
             aria-label="Próximo mês"
-            className="p-1.5 rounded-xl hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 active:scale-95 transition-all"
+            className="p-1.5 rounded-xl hover:bg-amber-50 dark:hover:bg-slate-800/90 hover:text-amber-700 dark:hover:text-amber-300 text-slate-700 dark:text-slate-300 active:scale-95 transition-all"
           >
             <ChevronRight size={14} />
           </button>

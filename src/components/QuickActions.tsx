@@ -69,7 +69,7 @@ export const QuickActions: React.FC = () => {
               id={action.id}
               key={action.id}
               onClick={action.onClick}
-              className="flex flex-col items-start p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md hover:bg-white dark:hover:bg-slate-850 transition-all active:scale-[0.97] text-left shadow-xs group hover:shadow-md"
+              className="flex flex-col items-start p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md hover:bg-amber-50/80 dark:hover:bg-slate-850 hover:border-amber-200 dark:hover:border-amber-500/30 transition-all active:scale-[0.97] text-left shadow-xs group hover:shadow-md"
             >
               <div
                 className={`w-9 h-9 rounded-xl ${action.iconBg} ${action.iconColor} flex items-center justify-center mb-2 shadow-2xs group-hover:scale-105 transition-transform`}

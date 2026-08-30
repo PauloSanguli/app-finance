@@ -88,7 +88,7 @@ export const SubaccountsListScreen: React.FC = () => {
             className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all ${
               selectedCardFilter === 'ALL'
                 ? 'bg-slate-900 dark:bg-amber-500 text-white dark:text-slate-950 shadow-xs'
-                : 'bg-white/70 dark:bg-slate-900/70 backdrop-blur-md text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800'
+                : 'bg-white/70 dark:bg-slate-900/70 backdrop-blur-md text-slate-600 dark:text-slate-400 hover:bg-amber-50 dark:hover:bg-slate-800/90 hover:text-amber-700 dark:hover:text-amber-300 hover:border-amber-200 dark:hover:border-amber-500/30 border border-slate-200/80 dark:border-slate-800'
             }`}
           >
             Todos os Bancos ({subaccounts.length})
@@ -104,7 +104,7 @@ export const SubaccountsListScreen: React.FC = () => {
                 className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all ${
                   isSelected
                     ? 'bg-amber-600 dark:bg-amber-500 text-white dark:text-slate-950 shadow-xs'
-                    : 'bg-white/70 dark:bg-slate-900/70 backdrop-blur-md text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800'
+                    : 'bg-white/70 dark:bg-slate-900/70 backdrop-blur-md text-slate-600 dark:text-slate-400 hover:bg-amber-50 dark:hover:bg-slate-800/90 hover:text-amber-700 dark:hover:text-amber-300 hover:border-amber-200 dark:hover:border-amber-500/30 border border-slate-200/80 dark:border-slate-800'
                 }`}
               >
                 {card.bankId === 'OUTRO' ? card.customBankName || 'Outro' : card.bankId} ({count})
@@ -160,7 +160,7 @@ export const SubaccountsListScreen: React.FC = () => {
                 <div
                   key={sub.id}
                   onClick={() => setSubaccountDetailId(sub.id)}
-                  className="group cursor-pointer p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md hover:border-slate-300 dark:hover:border-slate-700 hover:bg-white dark:hover:bg-slate-850 hover:shadow-md transition-all active:scale-[0.98] flex flex-col justify-between shadow-xs"
+                  className="group cursor-pointer p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md hover:border-amber-200 dark:hover:border-amber-500/40 hover:bg-amber-50/70 dark:hover:bg-slate-850 hover:shadow-md transition-all active:scale-[0.98] flex flex-col justify-between shadow-xs"
                 >
                   <div>
                     <div className="flex items-start justify-between">

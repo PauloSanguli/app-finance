@@ -95,7 +95,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
                     isActive
                       ? 'bg-amber-500 text-slate-950 shadow-xs'
-                      : 'text-slate-200 hover:text-white hover:bg-white/10'
+                      : 'text-slate-200 hover:text-amber-200 hover:bg-amber-500/10'
                   }`}
                 >
                   <Icon size={16} />
@@ -151,7 +151,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all ${
                   deviceViewMode === 'desktop'
                     ? 'bg-amber-500 text-slate-950 shadow-xs'
-                    : 'text-slate-300 hover:text-white'
+                    : 'text-slate-300 hover:text-amber-200 hover:bg-amber-500/10'
                 }`}
                 title="Modo Computador / Desktop Completo"
               >
@@ -163,7 +163,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all ${
                   deviceViewMode === 'mobile-frame'
                     ? 'bg-amber-500 text-slate-950 shadow-xs'
-                    : 'text-slate-300 hover:text-white'
+                    : 'text-slate-300 hover:text-amber-200 hover:bg-amber-500/10'
                 }`}
                 title="Simulador de Telemóvel"
               >
