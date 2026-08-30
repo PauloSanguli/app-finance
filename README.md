@@ -1,41 +1,63 @@
 # Finanças AO
 
-Aplicação de gestão financeira pessoal com foco em organização por envelopes/subcontas, controle de gastos, renda e relatórios mensais.
+Aplicação fintech pessoal para gerir contas, envelopes, rendimentos e despesas com foco em organização financeira e visualização por banco e subcontas.
 
 ## Visão geral
 
 A aplicação permite:
 
 - acompanhar o saldo total geral e por cartão bancário;
-- criar e gerenciar subcontas/envelopes de orçamento;
-- registrar entradas e saídas financeiras;
-- distribuir renda por categorias;
-- visualizar relatórios do mês atual;
+- criar e gerir subcontas/envelopes por categoria;
+- registrar gastos e entradas financeiras;
+- distribuir rendimentos por subcontas;
+- acompanhar o histórico de movimentos;
+- visualizar relatórios mensais;
 - alternar entre temas claro e escuro;
-- manter uma interface moderna inspirada em apps fintech.
+- persistir os dados no Supabase em vez de depender de dados locais.
 
-## Tecnologias
+## Stack tecnológica
 
-- React
+- React 19
 - TypeScript
 - Vite
 - Tailwind CSS
-- Lucide React
+- Supabase JS
 - Recharts
+- Lucide React
 
 ## Estrutura principal
 
-- `src/App.tsx` – composição principal da interface
-- `src/components/` – componentes da UI
-- `src/context/FinanceContext.tsx` – estado global da aplicação
-- `src/data/initialData.ts` – dados iniciais de demonstração
-- `src/types.ts` – tipos TypeScript
-- `src/utils/formatters.ts` – utilitários de formatação
+- `src/App.tsx` – layout principal da aplicação
+- `src/context/FinanceContext.tsx` – estado global e sincronização com Supabase
+- `src/components/` – UI principal do app
+- `src/types.ts` – tipos TypeScript do domínio financeiro
+- `src/utils/formatters.ts` – funções de formatação
+- `src/utils/supabase.ts` – cliente do Supabase
+- `supabase/schema.sql` – estrutura SQL das tabelas do projeto
+- `.env` – variáveis de ambiente locais
 
 ## Pré-requisitos
 
-- Node.js 18+
-- npm ou yarn
+- Node.js 20+
+- npm
+- projeto Supabase criado e configurado
+
+## Configuração do Supabase
+
+Crie um ficheiro `.env` na raiz do projeto com as variáveis:
+
+```env
+VITE_SUPABASE_URL="https://seu-projeto.supabase.co"
+VITE_SUPABASE_PUBLISHABLE_KEY="sua_chave_publica"
+VITE_SUPABASE_ANON_KEY="sua_chave_publica"
+```
+
+Depois, execute o SQL em [supabase/schema.sql](supabase/schema.sql) no SQL Editor do Supabase para criar as tabelas:
+
+- `cards`
+- `subaccounts`
+- `transactions`
+- `income_sources`
 
 ## Instalação
 
@@ -49,7 +71,7 @@ npm install
 npm run dev
 ```
 
-A aplicação será iniciada em:
+A aplicação será servida em:
 
 - http://localhost:3000
 
@@ -63,13 +85,15 @@ npm run build
 
 - `npm run dev` – inicia o ambiente de desenvolvimento
 - `npm run build` – gera a build de produção
-- `npm run preview` – visualiza a build localmente
-- `npm run lint` – valida TypeScript sem emitir arquivos
+- `npm run preview` – visualiza a aplicação compilada
+- `npm run lint` – valida TypeScript
 
 ## Observações
 
-Os dados desta aplicação são carregados em memória com valores de demonstração, ideais para visualização e prototipação.
+- O projeto foi adaptado para usar o Supabase como fonte principal de dados.
+- Não existem dados fake persistidos no código para uso em produção.
+- O frontend lê e escreve diretamente os dados financeiros no banco quando as tabelas estão disponíveis.
 
 ## Autor
 
-Projeto pessoal para gerenciamento financeiro.
+Projeto pessoal de gestão financeira para uso local e desenvolvimento contínuo.
