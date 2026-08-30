@@ -242,10 +242,25 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
           console.warn('Supabase income sources load error:', incomeSourcesResult.error.message);
         }
 
-        if ((cardsResult.data?.length ?? 0) > 0) setCards(cardsResult.data as BankCard[]);
-        if ((subaccountsResult.data?.length ?? 0) > 0) setSubaccounts(subaccountsResult.data as Subaccount[]);
-        if ((transactionsResult.data?.length ?? 0) > 0) setTransactions(transactionsResult.data as Transaction[]);
-        if ((incomeSourcesResult.data?.length ?? 0) > 0) setIncomeSources(incomeSourcesResult.data as IncomeSource[]);
+        const hasRemoteData =
+          (cardsResult.data?.length ?? 0) > 0 ||
+          (subaccountsResult.data?.length ?? 0) > 0 ||
+          (transactionsResult.data?.length ?? 0) > 0 ||
+          (incomeSourcesResult.data?.length ?? 0) > 0;
+
+        if (hasRemoteData) {
+          if ((cardsResult.data?.length ?? 0) > 0) setCards(cardsResult.data as BankCard[]);
+          if ((subaccountsResult.data?.length ?? 0) > 0) setSubaccounts(subaccountsResult.data as Subaccount[]);
+          if ((transactionsResult.data?.length ?? 0) > 0) setTransactions(transactionsResult.data as Transaction[]);
+          if ((incomeSourcesResult.data?.length ?? 0) > 0) setIncomeSources(incomeSourcesResult.data as IncomeSource[]);
+        } else {
+          await Promise.all([
+            syncRowsToSupabase('cards', cards),
+            syncRowsToSupabase('subaccounts', subaccounts),
+            syncRowsToSupabase('transactions', transactions),
+            syncRowsToSupabase('incomeSources', incomeSources),
+          ]);
+        }
       } catch (error) {
         console.warn('Supabase hydrate failed, using local data:', error);
       } finally {
