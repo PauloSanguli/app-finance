@@ -31,11 +31,13 @@ export const DistributeIncomeModal: React.FC = () => {
     incomeSources,
     subaccounts,
     cards,
+    currentCard: contextCurrentCard,
     distributeIncome,
     hideBalances,
   } = useFinance();
 
   const [selectedSourceId, setSelectedSourceId] = useState<string>('custom');
+  const [selectedCardId, setSelectedCardId] = useState<string>('');
   const [totalAmountStr, setTotalAmountStr] = useState<string>('');
   const [date, setDate] = useState<string>(getTodayDateString());
   const [description, setDescription] = useState<string>('');
@@ -47,6 +49,12 @@ export const DistributeIncomeModal: React.FC = () => {
     if (isDistributeIncomeOpen) {
       setConfettiFired(false);
       setDate(getTodayDateString());
+
+      const initialCardId =
+        (contextCurrentCard && contextCurrentCard.id) ||
+        (cards.length > 0 ? cards[0].id : '');
+
+      setSelectedCardId(initialCardId);
 
       if (preselectedIncomeSourceId) {
         const src = incomeSources.find((s) => s.id === preselectedIncomeSourceId);
@@ -66,14 +74,29 @@ export const DistributeIncomeModal: React.FC = () => {
         setDescription('Nova Entrada de Renda');
       }
 
-      // Pre-fill suggested default income shares for each subaccount
       const initialDist: Record<string, number> = {};
-      subaccounts.forEach((sub) => {
-        initialDist[sub.id] = sub.defaultIncomeShare || 0;
-      });
+      subaccounts
+        .filter((sub) => sub.cardId === initialCardId)
+        .forEach((sub) => {
+          initialDist[sub.id] = sub.defaultIncomeShare || 0;
+        });
       setDistributions(initialDist);
     }
-  }, [isDistributeIncomeOpen, preselectedIncomeSourceId, incomeSources, subaccounts]);
+  }, [isDistributeIncomeOpen, preselectedIncomeSourceId, incomeSources, subaccounts, cards, contextCurrentCard]);
+
+  useEffect(() => {
+    if (!isDistributeIncomeOpen || !selectedCardId) return;
+
+    setDistributions((prev) => {
+      const next: Record<string, number> = {};
+      subaccounts
+        .filter((sub) => sub.cardId === selectedCardId)
+        .forEach((sub) => {
+          next[sub.id] = prev[sub.id] ?? sub.defaultIncomeShare ?? 0;
+        });
+      return next;
+    });
+  }, [selectedCardId, isDistributeIncomeOpen, subaccounts]);
 
   // Handle source switch
   const handleSelectSource = (srcId: string) => {
@@ -90,12 +113,13 @@ export const DistributeIncomeModal: React.FC = () => {
   };
 
   const totalReceived = parseFloat(totalAmountStr) || 0;
+  const selectedCard = cards.find((card) => card.id === selectedCardId);
+  const filteredSubaccounts = subaccounts.filter((sub) => sub.cardId === selectedCardId);
 
-  // Sum of distributed amounts
-  const totalDistributed: number = (Object.values(distributions) as number[]).reduce(
-    (a: number, b: number) => a + (Number(b) || 0),
-    0
-  );
+  // Sum of distributed amounts for the selected card only
+  const totalDistributed: number = filteredSubaccounts.reduce((acc, sub) => {
+    return acc + (Number(distributions[sub.id]) || 0);
+  }, 0);
   const remainingToDistribute: number = totalReceived - totalDistributed;
 
   // Check if exactly zero and trigger confetti
@@ -128,31 +152,31 @@ export const DistributeIncomeModal: React.FC = () => {
   // Auto-fill suggested shares
   const handleAutoFillSuggested = () => {
     const newDist: Record<string, number> = {};
-    subaccounts.forEach((sub) => {
+    filteredSubaccounts.forEach((sub) => {
       newDist[sub.id] = sub.defaultIncomeShare || 0;
     });
-    setDistributions(newDist);
+    setDistributions((prev) => ({ ...prev, ...newDist }));
   };
 
-  // Distribute remaining evenly across all subaccounts
+  // Distribute remaining evenly across the subaccounts of the selected card
   const handleDistributeRemainingEvenly = () => {
-    if (remainingToDistribute <= 0 || subaccounts.length === 0) return;
-    const share = Math.floor(remainingToDistribute / subaccounts.length);
-    const remainder = remainingToDistribute % subaccounts.length;
+    if (remainingToDistribute <= 0 || filteredSubaccounts.length === 0) return;
+    const share = Math.floor(remainingToDistribute / filteredSubaccounts.length);
+    const remainder = remainingToDistribute % filteredSubaccounts.length;
 
     setDistributions((prev) => {
       const next = { ...prev };
-      subaccounts.forEach((sub, idx) => {
-        next[sub.id] = (next[sub.id] || 0) + share + (idx === 0 ? remainder : 0);
+      filteredSubaccounts.forEach((sub, idx) => {
+        next[sub.id] = (Number(next[sub.id]) || 0) + share + (idx === 0 ? remainder : 0);
       });
       return next;
     });
   };
 
-  // Clear all fields
+  // Clear all fields for the selected card
   const handleClearAll = () => {
-    const empty: Record<string, number> = {};
-    subaccounts.forEach((sub) => {
+    const empty: Record<string, number> = { ...distributions };
+    filteredSubaccounts.forEach((sub) => {
       empty[sub.id] = 0;
     });
     setDistributions(empty);
@@ -168,11 +192,11 @@ export const DistributeIncomeModal: React.FC = () => {
       return;
     }
 
-    const distList = (Object.entries(distributions) as [string, number][])
-      .filter(([_, amt]) => Number(amt) > 0)
-      .map(([subId, amt]) => ({
-        subaccountId: subId,
-        amount: Number(amt),
+    const distList = filteredSubaccounts
+      .filter((sub) => Number(distributions[sub.id]) > 0)
+      .map((sub) => ({
+        subaccountId: sub.id,
+        amount: Number(distributions[sub.id]) || 0,
       }));
 
     distributeIncome({
@@ -272,6 +296,39 @@ export const DistributeIncomeModal: React.FC = () => {
                 </div>
               </div>
             )}
+
+            {/* Card Selector */}
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                Cartão que recebe a renda
+              </label>
+              {cards.length === 0 ? (
+                <div className="p-3 bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-2xl text-xs text-amber-800 dark:text-amber-300">
+                  Adiciona primeiro um cartão para receber a renda.
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {cards.map((card) => {
+                    const style = BANK_STYLES[card.bankId] || BANK_STYLES.OUTRO;
+                    const isSelected = selectedCardId === card.id;
+                    return (
+                      <button
+                        key={card.id}
+                        type="button"
+                        onClick={() => setSelectedCardId(card.id)}
+                        className={`px-3 py-2 rounded-xl border text-left text-[11px] font-bold transition-all ${
+                          isSelected
+                            ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                            : 'bg-white/80 dark:bg-slate-800/80 border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-slate-800/90'
+                        }`}
+                      >
+                        {card.bankId === 'OUTRO' ? card.customBankName || 'Outro' : style.shortName}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
 
             {/* Total Received Amount Input */}
             <div className="bg-white/70 dark:bg-slate-850/70 backdrop-blur-md border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-xs">
@@ -385,54 +442,60 @@ export const DistributeIncomeModal: React.FC = () => {
             {/* Subaccounts Breakdown Inputs */}
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                Atribuição por Subconta ({subaccounts.length} envelopes)
+                Atribuição por Subconta ({filteredSubaccounts.length} envelopes)
               </label>
 
-              <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
-                {subaccounts.map((sub) => {
-                  const Icon = getCategoryIcon(sub.icon);
-                  const card = cards.find((c) => c.id === sub.cardId);
+              {filteredSubaccounts.length === 0 ? (
+                <div className="p-4 bg-white/70 dark:bg-slate-850/70 border border-dashed border-slate-300 dark:border-slate-700 rounded-2xl text-center text-xs text-slate-600 dark:text-slate-300">
+                  Não há subcontas neste cartão. Seleciona um cartão com envelopes criados.
+                </div>
+              ) : (
+                <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                  {filteredSubaccounts.map((sub) => {
+                    const Icon = getCategoryIcon(sub.icon);
+                    const card = cards.find((c) => c.id === sub.cardId);
 
-                  return (
-                    <div
-                      key={sub.id}
-                      className="p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/75 dark:bg-slate-850/75 backdrop-blur-md hover:bg-amber-50/70 dark:hover:bg-slate-800 transition-all flex items-center justify-between gap-3 shadow-xs"
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <div
-                          className="w-8 h-8 rounded-xl flex items-center justify-center text-white shrink-0 shadow-2xs"
-                          style={{ backgroundColor: sub.color || '#0284c7' }}
-                        >
-                          <Icon size={16} />
+                    return (
+                      <div
+                        key={sub.id}
+                        className="p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/75 dark:bg-slate-850/75 backdrop-blur-md hover:bg-amber-50/70 dark:hover:bg-slate-800 transition-all flex items-center justify-between gap-3 shadow-xs"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div
+                            className="w-8 h-8 rounded-xl flex items-center justify-center text-white shrink-0 shadow-2xs"
+                            style={{ backgroundColor: sub.color || '#0284c7' }}
+                          >
+                            <Icon size={16} />
+                          </div>
+                          <div className="truncate">
+                            <span className="text-xs font-bold text-slate-900 dark:text-white block truncate">
+                              {sub.name}
+                            </span>
+                            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate block">
+                              {card ? (card.bankId === 'OUTRO' ? card.customBankName || 'Outro' : card.bankId) : 'Conta'} • Sugerido:{' '}
+                              {formatKwanza(sub.defaultIncomeShare || 0)}
+                            </span>
+                          </div>
                         </div>
-                        <div className="truncate">
-                          <span className="text-xs font-bold text-slate-900 dark:text-white block truncate">
-                            {sub.name}
-                          </span>
-                          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate block">
-                            {card ? (card.bankId === 'OUTRO' ? card.customBankName || 'Outro' : card.bankId) : 'Conta'} • Sugerido:{' '}
-                            {formatKwanza(sub.defaultIncomeShare || 0)}
-                          </span>
+
+                        <div className="w-32 shrink-0">
+                          <div className="relative">
+                            <input
+                              type="number"
+                              placeholder="0"
+                              value={distributions[sub.id] ?? ''}
+                              onChange={(e) =>
+                                handleSubaccountAmountChange(sub.id, e.target.value)
+                              }
+                              className="w-full text-right font-bold text-xs px-2.5 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono shadow-2xs"
+                            />
+                          </div>
                         </div>
                       </div>
-
-                      <div className="w-32 shrink-0">
-                        <div className="relative">
-                          <input
-                            type="number"
-                            placeholder="0"
-                            value={distributions[sub.id] ?? ''}
-                            onChange={(e) =>
-                              handleSubaccountAmountChange(sub.id, e.target.value)
-                            }
-                            className="w-full text-right font-bold text-xs px-2.5 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono shadow-2xs"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Date & Note */}
@@ -470,9 +533,9 @@ export const DistributeIncomeModal: React.FC = () => {
               id="btn-confirm-distribute"
               type="button"
               onClick={handleConfirm}
-              disabled={totalReceived <= 0 || totalDistributed <= 0}
+              disabled={totalReceived <= 0 || totalDistributed <= 0 || filteredSubaccounts.length === 0}
               className={`w-full py-3.5 px-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all ${
-                totalReceived > 0 && totalDistributed > 0
+                totalReceived > 0 && totalDistributed > 0 && filteredSubaccounts.length > 0
                   ? 'bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer'
                   : 'bg-amber-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
               }`}
