@@ -14,6 +14,7 @@ import {
   INITIAL_INCOME_SOURCES,
 } from '../data/initialData';
 import { getTodayDateString } from '../utils/formatters';
+import { supabase, hasSupabaseConfig } from '../utils/supabase';
 
 interface FinanceContextType {
   // Data
@@ -119,6 +120,25 @@ const STORAGE_KEYS = {
   THEME_DARK: 'financas_angola_theme_dark_v1',
 };
 
+const TABLES_TO_SYNC = {
+  cards: 'cards',
+  subaccounts: 'subaccounts',
+  transactions: 'transactions',
+  incomeSources: 'income_sources',
+} as const;
+
+const syncRowsToSupabase = async <T,>(tableName: keyof typeof TABLES_TO_SYNC, rows: T[]) => {
+  if (!hasSupabaseConfig || !supabase || rows.length === 0) return;
+
+  const { error } = await supabase
+    .from(TABLES_TO_SYNC[tableName])
+    .upsert(rows, { onConflict: 'id' });
+
+  if (error && error.code !== '42P01') {
+    console.warn(`Supabase sync failed for ${TABLES_TO_SYNC[tableName]}:`, error.message);
+  }
+};
+
 export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Theme state
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
@@ -192,6 +212,62 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return false;
     }
   });
+
+  const [supabaseInitialized, setSupabaseInitialized] = useState(false);
+
+  useEffect(() => {
+    if (!hasSupabaseConfig || !supabase || supabaseInitialized) {
+      return;
+    }
+
+    const hydrateFromSupabase = async () => {
+      try {
+        const [cardsResult, subaccountsResult, transactionsResult, incomeSourcesResult] = await Promise.all([
+          supabase.from(TABLES_TO_SYNC.cards).select('*'),
+          supabase.from(TABLES_TO_SYNC.subaccounts).select('*'),
+          supabase.from(TABLES_TO_SYNC.transactions).select('*'),
+          supabase.from(TABLES_TO_SYNC.incomeSources).select('*'),
+        ]);
+
+        if (cardsResult.error && cardsResult.error.code !== '42P01') {
+          console.warn('Supabase cards load error:', cardsResult.error.message);
+        }
+        if (subaccountsResult.error && subaccountsResult.error.code !== '42P01') {
+          console.warn('Supabase subaccounts load error:', subaccountsResult.error.message);
+        }
+        if (transactionsResult.error && transactionsResult.error.code !== '42P01') {
+          console.warn('Supabase transactions load error:', transactionsResult.error.message);
+        }
+        if (incomeSourcesResult.error && incomeSourcesResult.error.code !== '42P01') {
+          console.warn('Supabase income sources load error:', incomeSourcesResult.error.message);
+        }
+
+        if ((cardsResult.data?.length ?? 0) > 0) setCards(cardsResult.data as BankCard[]);
+        if ((subaccountsResult.data?.length ?? 0) > 0) setSubaccounts(subaccountsResult.data as Subaccount[]);
+        if ((transactionsResult.data?.length ?? 0) > 0) setTransactions(transactionsResult.data as Transaction[]);
+        if ((incomeSourcesResult.data?.length ?? 0) > 0) setIncomeSources(incomeSourcesResult.data as IncomeSource[]);
+      } catch (error) {
+        console.warn('Supabase hydrate failed, using local data:', error);
+      } finally {
+        setSupabaseInitialized(true);
+      }
+    };
+
+    void hydrateFromSupabase();
+  }, [supabaseInitialized]);
+
+  useEffect(() => {
+    if (!hasSupabaseConfig || !supabase || !supabaseInitialized) {
+      return;
+    }
+
+    void Promise.all([
+      syncRowsToSupabase('cards', cards),
+      syncRowsToSupabase('subaccounts', subaccounts),
+      syncRowsToSupabase('transactions', transactions),
+      syncRowsToSupabase('incomeSources', incomeSources),
+    ]);
+  }, [cards, subaccounts, transactions, incomeSources, supabaseInitialized]);
 
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [selectedCardIndex, setSelectedCardIndex] = useState<number>(0);
