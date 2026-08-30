@@ -1,0 +1,6 @@
+{
+  "name": "Finanças",
+  "description": "App mobile de gestão financeira pessoal e sistema de envelopes/subcontas com estética de mobile banking angolano.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
