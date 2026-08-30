@@ -106,7 +106,7 @@ export const AddIncomeSourceModal: React.FC = () => {
             </div>
             <button
               onClick={() => setIsAddIncomeSourceOpen(false)}
-              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-xs transition-colors"
+              className="p-2 rounded-full bg-white/10 hover:bg-amber-100/15 dark:hover:bg-slate-700/80 text-white backdrop-blur-xs transition-colors"
             >
               <X size={18} />
             </button>
@@ -155,7 +155,7 @@ export const AddIncomeSourceModal: React.FC = () => {
                     className={`py-2 px-1 text-center rounded-xl text-xs font-bold transition-all ${
                       frequency === f
                         ? 'bg-emerald-600 text-white shadow-xs'
-                        : 'bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 backdrop-blur-xs border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                        : 'bg-white/80 dark:bg-slate-800/80 hover:bg-emerald-50 dark:hover:bg-slate-800/90 hover:border-emerald-200 dark:hover:border-emerald-500/30 backdrop-blur-xs border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300'
                     }`}
                   >
                     {f}

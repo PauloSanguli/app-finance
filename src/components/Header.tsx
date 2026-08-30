@@ -32,7 +32,6 @@ export const Header: React.FC<HeaderProps> = ({
     setActiveTab,
     hideBalances,
     setHideBalances,
-    resetToDemoData,
     isDarkMode,
     toggleDarkMode,
     openNewExpenseModal,
@@ -179,7 +178,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleDarkMode}
             aria-label={isDarkMode ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
             title={isDarkMode ? 'Ativar Modo Claro' : 'Ativar Modo Escuro'}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-all border border-white/15 backdrop-blur-md active:scale-95 shadow-xs"
+            className="p-2 rounded-xl bg-white/10 hover:bg-amber-500/10 text-slate-200 hover:text-amber-200 transition-all border border-white/15 backdrop-blur-md active:scale-95 shadow-xs"
           >
             {isDarkMode ? <Sun size={17} className="text-amber-400" /> : <Moon size={17} />}
           </button>
@@ -191,26 +190,11 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => setHideBalances((prev) => !prev)}
             aria-label={hideBalances ? 'Mostrar saldos' : 'Ocultar saldos'}
             title={hideBalances ? 'Mostrar saldos' : 'Ocultar saldos'}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-all border border-white/15 backdrop-blur-md active:scale-95 shadow-xs"
+            className="p-2 rounded-xl bg-white/10 hover:bg-amber-500/10 text-slate-200 hover:text-amber-200 transition-all border border-white/15 backdrop-blur-md active:scale-95 shadow-xs"
           >
             {hideBalances ? <EyeOff size={17} className="text-amber-400" /> : <Eye size={17} />}
           </button>
 
-          {/* Reset Demo Data */}
-          <button
-            id="btn-reset-demo"
-            type="button"
-            onClick={() => {
-              if (window.confirm('Desejas restaurar os dados de demonstração iniciais?')) {
-                resetToDemoData();
-              }
-            }}
-            aria-label="Restaurar dados de teste"
-            title="Restaurar dados de demonstração"
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-all border border-white/15 backdrop-blur-md active:scale-95 shadow-xs"
-          >
-            <RotateCcw size={17} />
-          </button>
         </div>
       </div>
     </header>

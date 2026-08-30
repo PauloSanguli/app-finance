@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FinanceProvider, useFinance } from './context/FinanceContext';
 import { Header } from './components/Header';
 import { CardCarousel } from './components/CardCarousel';
@@ -242,10 +242,10 @@ const MainAppContainer: React.FC = () => {
   const { activeTab } = useFinance();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-200/70 to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex flex-col justify-start font-sans text-slate-900 dark:text-slate-100 antialiased selection:bg-amber-500 selection:text-white relative overflow-hidden transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-[#f9f3ea] via-[#f5f0e8] to-[#fffaf5] dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 flex flex-col justify-start font-sans text-slate-900 dark:text-slate-100 antialiased selection:bg-amber-500 selection:text-white relative overflow-hidden transition-colors duration-300">
       {/* Frosted ambient background glowing lights */}
-      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-blue-400/10 dark:bg-blue-600/10 blur-3xl pointer-events-none" />
-      <div className="absolute top-1/3 -right-32 w-96 h-96 rounded-full bg-amber-400/10 dark:bg-amber-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-amber-400/15 dark:bg-amber-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 -right-32 w-96 h-96 rounded-full bg-orange-300/20 dark:bg-orange-500/10 blur-3xl pointer-events-none" />
       <div className="absolute -bottom-32 left-1/3 w-96 h-96 rounded-full bg-emerald-400/10 dark:bg-emerald-600/10 blur-3xl pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto">

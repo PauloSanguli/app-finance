@@ -147,7 +147,7 @@ export const SubaccountsListScreen: React.FC = () => {
               let stateLabel = 'Disponível';
 
               if (balance === 0) {
-                stateBg = 'bg-slate-100/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-400 border-slate-200/80 dark:border-slate-700';
+                stateBg = 'bg-amber-50/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-400 border-amber-200/80 dark:border-slate-700';
                 stateDot = 'bg-slate-400';
                 stateLabel = 'Vazio';
               } else if (balance < 0) {
@@ -185,7 +185,7 @@ export const SubaccountsListScreen: React.FC = () => {
                       </div>
                       <ChevronRight
                         size={16}
-                        className="text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200 group-hover:translate-x-0.5 transition-all mt-1"
+                        className="text-slate-400 group-hover:text-amber-600 dark:group-hover:text-amber-300 group-hover:translate-x-0.5 transition-all mt-1"
                       />
                     </div>
 

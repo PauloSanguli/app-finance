@@ -104,7 +104,7 @@ export const IncomeSourcesScreen: React.FC = () => {
                 key={source.id}
                 className={`p-4.5 rounded-2xl border transition-all shadow-xs flex flex-col justify-between ${
                   source.active
-                    ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-slate-200/80 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-850 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md'
+                    ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-slate-200/80 dark:border-slate-800 hover:bg-amber-50/70 dark:hover:bg-slate-850 hover:border-amber-200 dark:hover:border-amber-500/30 hover:shadow-md'
                     : 'bg-white/40 dark:bg-slate-900/40 backdrop-blur-sm border-slate-200/40 dark:border-slate-850 opacity-60'
                 }`}
               >
@@ -115,7 +115,7 @@ export const IncomeSourcesScreen: React.FC = () => {
                         className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-2xs border ${
                           source.active
                             ? 'bg-emerald-100/90 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200/80 dark:border-emerald-800/60'
-                            : 'bg-slate-200/80 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-300/80 dark:border-slate-700'
+                            : 'bg-amber-50/80 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-amber-200/80 dark:border-slate-700'
                         }`}
                       >
                         <Wallet size={20} />
@@ -125,7 +125,7 @@ export const IncomeSourcesScreen: React.FC = () => {
                           {source.name}
                         </h3>
                         <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                          <span className="font-medium px-2 py-0.5 rounded-md bg-slate-100/90 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-bold border border-slate-200/60 dark:border-slate-700">
+                          <span className="font-medium px-2 py-0.5 rounded-md bg-amber-50/90 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-bold border border-amber-200/60 dark:border-slate-700">
                             {source.frequency}
                           </span>
                           {source.receivingDay && (
@@ -162,7 +162,7 @@ export const IncomeSourcesScreen: React.FC = () => {
                     className={`text-xs font-semibold flex items-center gap-1.5 px-2.5 py-1 rounded-xl transition-all ${
                       source.active
                         ? 'text-emerald-700 dark:text-emerald-300 bg-emerald-50/80 dark:bg-emerald-950/60 hover:bg-emerald-100/80 border border-emerald-200/60 dark:border-emerald-800/60'
-                        : 'text-slate-500 dark:text-slate-400 hover:bg-slate-200/80 dark:hover:bg-slate-800'
+                        : 'text-slate-500 dark:text-slate-400 hover:bg-amber-50/80 dark:hover:bg-slate-800'
                     }`}
                   >
                     {source.active ? (
@@ -182,7 +182,7 @@ export const IncomeSourcesScreen: React.FC = () => {
                     <button
                       onClick={() => openAddIncomeSourceModal(source)}
                       title="Editar Renda"
-                      className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                      className="p-1.5 text-slate-400 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl hover:bg-amber-50 dark:hover:bg-slate-800 transition-colors"
                     >
                       <Edit2 size={14} />
                     </button>

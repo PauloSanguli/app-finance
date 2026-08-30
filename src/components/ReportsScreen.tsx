@@ -164,7 +164,7 @@ export const ReportsScreen: React.FC = () => {
                 </p>
               </div>
 
-              <div className="flex bg-slate-100/80 dark:bg-slate-800 p-0.5 rounded-xl text-xs border border-slate-200/60 dark:border-slate-700">
+              <div className="flex bg-amber-50/80 dark:bg-slate-800 p-0.5 rounded-xl text-xs border border-amber-200/60 dark:border-slate-700">
                 <button
                   onClick={() => setChartType('BAR')}
                   className={`p-1.5 rounded-lg transition-all ${
@@ -305,7 +305,7 @@ export const ReportsScreen: React.FC = () => {
                   </div>
 
                   <div className="flex items-center gap-2.5">
-                    <div className="flex-1 h-2 rounded-full bg-slate-200/80 dark:bg-slate-800 overflow-hidden">
+                    <div className="flex-1 h-2 rounded-full bg-amber-100/80 dark:bg-slate-800 overflow-hidden">
                       <div
                         className="h-full rounded-full bg-amber-500"
                         style={{ width: `${percentOfTotal}%` }}

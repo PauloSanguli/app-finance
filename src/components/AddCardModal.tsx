@@ -81,7 +81,7 @@ export const AddCardModal: React.FC = () => {
             </div>
             <button
               onClick={() => setIsAddCardOpen(false)}
-              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-xs transition-colors"
+              className="p-2 rounded-full bg-white/10 hover:bg-amber-100/15 dark:hover:bg-slate-700/80 text-white backdrop-blur-xs transition-colors"
             >
               <X size={18} />
             </button>
@@ -105,7 +105,7 @@ export const AddCardModal: React.FC = () => {
                       className={`p-2.5 rounded-xl border text-center font-bold text-xs transition-all ${
                         isSelected
                           ? 'bg-slate-900 dark:bg-amber-500 text-white dark:text-slate-950 border-slate-900 dark:border-amber-500 shadow-xs'
-                          : 'bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-700 backdrop-blur-xs'
+                          : 'bg-white/80 dark:bg-slate-800/80 hover:bg-amber-50 dark:hover:bg-slate-800/90 hover:border-amber-200 dark:hover:border-amber-500/30 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-700 backdrop-blur-xs'
                       }`}
                     >
                       {style.shortName}
@@ -144,7 +144,7 @@ export const AddCardModal: React.FC = () => {
                     className={`py-2 px-1 text-center rounded-xl text-xs font-bold transition-all ${
                       accountType === type
                         ? 'bg-amber-500 text-slate-950 font-black shadow-xs'
-                        : 'bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 backdrop-blur-xs border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                        : 'bg-white/80 dark:bg-slate-800/80 hover:bg-amber-50 dark:hover:bg-slate-800/90 hover:border-amber-200 dark:hover:border-amber-500/30 backdrop-blur-xs border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300'
                     }`}
                   >
                     {type}

@@ -184,7 +184,7 @@ export const NewExpenseModal: React.FC = () => {
             <button
               id="btn-close-new-expense"
               onClick={() => setIsNewExpenseOpen(false)}
-              className="p-2 rounded-full bg-slate-200/70 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 backdrop-blur-xs transition-colors"
+              className="p-2 rounded-full bg-slate-200/70 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 backdrop-blur-xs transition-colors"
             >
               <X size={18} />
             </button>
@@ -241,7 +241,7 @@ export const NewExpenseModal: React.FC = () => {
                   key={val}
                   type="button"
                   onClick={() => handleQuickAdd(val)}
-                  className="py-2 px-2 rounded-xl bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 backdrop-blur-md border border-slate-200/80 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-[11px] font-bold transition-all active:scale-95 text-center shadow-xs"
+                  className="py-2 px-2 rounded-xl bg-white/80 dark:bg-slate-800/80 hover:bg-amber-50 dark:hover:bg-slate-800/90 hover:border-amber-200 dark:hover:border-amber-500/30 backdrop-blur-md border border-slate-200/80 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-[11px] font-bold transition-all active:scale-95 text-center shadow-xs"
                 >
                   +{val / 1000}k Kz
                 </button>
@@ -279,7 +279,7 @@ export const NewExpenseModal: React.FC = () => {
                         className={`flex-shrink-0 min-w-[145px] p-2.5 rounded-2xl border text-left transition-all relative ${
                           isSelected
                             ? 'bg-slate-900 dark:bg-amber-500 text-white dark:text-slate-950 border-slate-900 dark:border-amber-500 shadow-md ring-2 ring-slate-900/20 dark:ring-amber-500/20 scale-[1.02]'
-                            : 'bg-white/80 dark:bg-slate-800/80 border-slate-200/80 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 shadow-xs'
+                            : 'bg-white/80 dark:bg-slate-800/80 border-slate-200/80 dark:border-slate-700 hover:bg-amber-50 dark:hover:bg-slate-800/90 text-slate-700 dark:text-slate-300 hover:border-amber-200 dark:hover:border-amber-500/30 shadow-xs'
                         }`}
                       >
                         <div className="flex items-center justify-between gap-1.5 mb-1.5">
@@ -287,7 +287,7 @@ export const NewExpenseModal: React.FC = () => {
                             className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md ${
                               isSelected
                                 ? 'bg-white/20 dark:bg-slate-950/20 text-white dark:text-slate-950'
-                                : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200'
+                                : 'bg-amber-50 dark:bg-slate-700 text-slate-800 dark:text-slate-200'
                             }`}
                           >
                             {card.bankId === 'OUTRO' ? card.customBankName || 'Outro' : bStyle.shortName}
@@ -378,7 +378,7 @@ export const NewExpenseModal: React.FC = () => {
                         className={`flex items-center justify-between p-2.5 rounded-xl border text-left transition-all ${
                           isSelected
                             ? 'bg-amber-50/90 dark:bg-amber-950/50 border-amber-500 ring-2 ring-amber-500/20 text-slate-900 dark:text-white shadow-xs'
-                            : 'bg-white/80 dark:bg-slate-800/80 border-slate-200/80 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-700 dark:text-slate-300'
+                            : 'bg-white/80 dark:bg-slate-800/80 border-slate-200/80 dark:border-slate-700 hover:border-amber-200 dark:hover:border-amber-500/30 text-slate-700 dark:text-slate-300'
                         }`}
                       >
                         <div className="flex items-center gap-2 min-w-0">
@@ -426,7 +426,7 @@ export const NewExpenseModal: React.FC = () => {
                     key={digit}
                     type="button"
                     onClick={() => handleDigit(digit)}
-                    className="h-11 rounded-xl bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 font-black text-lg text-slate-900 dark:text-white shadow-xs active:scale-95 active:bg-slate-100 dark:active:bg-slate-600 transition-all flex items-center justify-center border border-slate-200/80 dark:border-slate-700"
+                    className="h-11 rounded-xl bg-white/90 dark:bg-slate-800/90 hover:bg-amber-50 dark:hover:bg-slate-800/90 hover:border-amber-200 dark:hover:border-amber-500/30 font-black text-lg text-slate-900 dark:text-white shadow-xs active:scale-95 active:bg-slate-100 dark:active:bg-slate-600 transition-all flex items-center justify-center border border-slate-200/80 dark:border-slate-700"
                   >
                     {digit}
                   </button>
@@ -441,14 +441,14 @@ export const NewExpenseModal: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleDigit('0')}
-                  className="h-11 rounded-xl bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 font-black text-lg text-slate-900 dark:text-white shadow-xs active:scale-95 active:bg-slate-100 dark:active:bg-slate-600 transition-all flex items-center justify-center border border-slate-200/80 dark:border-slate-700"
+                  className="h-11 rounded-xl bg-white/90 dark:bg-slate-800/90 hover:bg-amber-50 dark:hover:bg-slate-800/90 hover:border-amber-200 dark:hover:border-amber-500/30 font-black text-lg text-slate-900 dark:text-white shadow-xs active:scale-95 active:bg-slate-100 dark:active:bg-slate-600 transition-all flex items-center justify-center border border-slate-200/80 dark:border-slate-700"
                 >
                   0
                 </button>
                 <button
                   type="button"
                   onClick={handleBackspace}
-                  className="h-11 rounded-xl bg-slate-200/80 dark:bg-slate-800/90 hover:bg-slate-300/80 dark:hover:bg-slate-700 font-bold text-slate-700 dark:text-slate-300 shadow-xs active:scale-95 transition-all flex items-center justify-center border border-slate-300/80 dark:border-slate-700"
+                  className="h-11 rounded-xl bg-slate-200/80 dark:bg-slate-800/90 hover:bg-amber-100 dark:hover:bg-slate-700 font-bold text-slate-700 dark:text-slate-300 shadow-xs active:scale-95 transition-all flex items-center justify-center border border-slate-300/80 dark:border-slate-700"
                 >
                   <Delete size={20} />
                 </button>
@@ -505,7 +505,7 @@ export const NewExpenseModal: React.FC = () => {
               className={`w-full py-3.5 px-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all ${
                 numericAmount > 0 && selectedSubId
                   ? 'bg-rose-600 hover:bg-rose-700 text-white cursor-pointer'
-                  : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
+                  : 'bg-amber-50 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
               }`}
             >
               <Check size={18} className="stroke-[3]" />
