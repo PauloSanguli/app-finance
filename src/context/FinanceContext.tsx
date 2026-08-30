@@ -47,7 +47,8 @@ interface FinanceContextType {
   isAddSubaccountOpen: boolean;
   setIsAddSubaccountOpen: (open: boolean) => void;
   preselectedAddSubaccountCardId: string | null;
-  openAddSubaccountModal: (cardId?: string) => void;
+  editingSubaccount: Subaccount | null;
+  openAddSubaccountModal: (cardId?: string, subaccount?: Subaccount) => void;
   isAddIncomeSourceOpen: boolean;
   setIsAddIncomeSourceOpen: (open: boolean) => void;
   editingIncomeSource: IncomeSource | null;
@@ -111,7 +112,7 @@ const TABLES_TO_SYNC = {
   incomeSources: 'income_sources',
 } as const;
 
-const syncRowsToSupabase = async <T,>(tableName: keyof typeof TABLES_TO_SYNC, rows: T[]) => {
+const syncRowsToSupabase = async <T extends { id: string }>(tableName: keyof typeof TABLES_TO_SYNC, rows: T[]) => {
   if (!hasSupabaseConfig || !supabase || rows.length === 0) return;
 
   const { error } = await supabase
@@ -229,6 +230,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [isAddCardOpen, setIsAddCardOpen] = useState<boolean>(false);
   const [isAddSubaccountOpen, setIsAddSubaccountOpen] = useState<boolean>(false);
   const [preselectedAddSubaccountCardId, setPreselectedAddSubaccountCardId] = useState<string | null>(null);
+  const [editingSubaccount, setEditingSubaccount] = useState<Subaccount | null>(null);
   const [isAddIncomeSourceOpen, setIsAddIncomeSourceOpen] = useState<boolean>(false);
   const [editingIncomeSource, setEditingIncomeSource] = useState<IncomeSource | null>(null);
 
@@ -354,8 +356,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setIsDistributeIncomeOpen(true);
   };
 
-  const openAddSubaccountModal = (cardId?: string) => {
+  const openAddSubaccountModal = (cardId?: string, subaccount?: Subaccount) => {
     setPreselectedAddSubaccountCardId(cardId || currentCard?.id || null);
+    setEditingSubaccount(subaccount || null);
     setIsAddSubaccountOpen(true);
   };
 
@@ -544,6 +547,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         isAddSubaccountOpen,
         setIsAddSubaccountOpen,
         preselectedAddSubaccountCardId,
+        editingSubaccount,
         openAddSubaccountModal,
         isAddIncomeSourceOpen,
         setIsAddIncomeSourceOpen,

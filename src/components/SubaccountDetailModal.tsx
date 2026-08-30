@@ -30,6 +30,7 @@ export const SubaccountDetailModal: React.FC = () => {
     getSubaccountTransactions,
     openNewExpenseModal,
     openDistributeIncomeModal,
+    openAddSubaccountModal,
     deleteSubaccount,
     deleteTransaction,
     hideBalances,
@@ -307,19 +308,32 @@ export const SubaccountDetailModal: React.FC = () => {
             )}
           </div>
 
-          {/* Footer with subaccount removal */}
-          <div className="p-4 border-t border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md flex items-center justify-between text-xs">
+          {/* Footer with subaccount actions */}
+          <div className="p-4 border-t border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md flex items-center justify-between text-xs gap-3">
             <span className="text-slate-500 dark:text-slate-400 font-medium">
               Criada em: {subaccount.createdAt}
             </span>
-            <button
-              id="btn-delete-subaccount"
-              onClick={handleDeleteSubaccount}
-              className="text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 font-semibold flex items-center gap-1 hover:underline"
-            >
-              <Trash2 size={13} />
-              <span>Remover Subconta</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                id="btn-edit-subaccount"
+                onClick={() => {
+                  setSubaccountDetailId(null);
+                  openAddSubaccountModal(undefined, subaccount);
+                }}
+                className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-semibold flex items-center gap-1 hover:underline"
+              >
+                <Layers size={13} />
+                <span>Editar</span>
+              </button>
+              <button
+                id="btn-delete-subaccount"
+                onClick={handleDeleteSubaccount}
+                className="text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 font-semibold flex items-center gap-1 hover:underline"
+              >
+                <Trash2 size={13} />
+                <span>Remover</span>
+              </button>
+            </div>
           </div>
         </motion.div>
       </div>
