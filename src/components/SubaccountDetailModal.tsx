@@ -129,7 +129,7 @@ export const SubaccountDetailModal: React.FC = () => {
               <button
                 id="btn-close-subaccount-detail"
                 onClick={() => setSubaccountDetailId(null)}
-                className="p-2 rounded-full bg-slate-200/70 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 backdrop-blur-xs transition-colors"
+                className="p-2 rounded-full bg-slate-200/70 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 backdrop-blur-xs transition-colors"
               >
                 <X size={18} />
               </button>
@@ -209,7 +209,7 @@ export const SubaccountDetailModal: React.FC = () => {
                 className={`px-2.5 py-1 rounded-lg transition-colors ${
                   filterType === 'ALL'
                     ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-amber-700 dark:hover:text-amber-300'
                 }`}
               >
                 Todos
@@ -219,7 +219,7 @@ export const SubaccountDetailModal: React.FC = () => {
                 className={`px-2.5 py-1 rounded-lg transition-colors ${
                   filterType === 'EXPENSE'
                     ? 'bg-white dark:bg-slate-700 text-rose-600 dark:text-rose-400 shadow-xs'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-amber-700 dark:hover:text-amber-300'
                 }`}
               >
                 Saídas
@@ -229,7 +229,7 @@ export const SubaccountDetailModal: React.FC = () => {
                 className={`px-2.5 py-1 rounded-lg transition-colors ${
                   filterType === 'INCOME'
                     ? 'bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-xs'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-amber-700 dark:hover:text-amber-300'
                 }`}
               >
                 Entradas
@@ -253,7 +253,7 @@ export const SubaccountDetailModal: React.FC = () => {
                 return (
                   <div
                     key={tx.id}
-                    className="p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-850/80 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 transition-all flex items-center justify-between group shadow-xs"
+                    className="p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-850/80 backdrop-blur-md hover:bg-amber-50/70 dark:hover:bg-slate-800 transition-all flex items-center justify-between group shadow-xs"
                   >
                     <div className="flex items-center gap-3">
                       <div

@@ -227,7 +227,7 @@ export const DistributeIncomeModal: React.FC = () => {
             <button
               id="btn-close-distribute-income"
               onClick={() => setIsDistributeIncomeOpen(false)}
-              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-xs transition-colors"
+              className="p-2 rounded-full bg-white/10 hover:bg-amber-100/15 dark:hover:bg-slate-700/80 text-white backdrop-blur-xs transition-colors"
             >
               <X size={18} />
             </button>
@@ -251,7 +251,7 @@ export const DistributeIncomeModal: React.FC = () => {
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                           isSelected
                             ? 'bg-emerald-600 text-white shadow-xs'
-                            : 'bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 backdrop-blur-xs border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                            : 'bg-white/80 dark:bg-slate-800/80 hover:bg-emerald-50 dark:hover:bg-slate-800/90 hover:border-emerald-200 dark:hover:border-emerald-500/30 backdrop-blur-xs border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300'
                         }`}
                       >
                         {src.name}
@@ -264,7 +264,7 @@ export const DistributeIncomeModal: React.FC = () => {
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                       selectedSourceId === 'custom'
                         ? 'bg-emerald-600 text-white shadow-xs'
-                        : 'bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 backdrop-blur-xs border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                        : 'bg-white/80 dark:bg-slate-800/80 hover:bg-emerald-50 dark:hover:bg-slate-800/90 hover:border-emerald-200 dark:hover:border-emerald-500/30 backdrop-blur-xs border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300'
                     }`}
                   >
                     + Outra Entrada
@@ -359,7 +359,7 @@ export const DistributeIncomeModal: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleAutoFillSuggested}
-                  className="px-2.5 py-1 rounded-xl bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 backdrop-blur-xs border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1 active:scale-95 shadow-2xs"
+                  className="px-2.5 py-1 rounded-xl bg-white/80 dark:bg-slate-800/80 hover:bg-amber-50 dark:hover:bg-slate-800/90 hover:border-amber-200 dark:hover:border-amber-500/30 backdrop-blur-xs border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1 active:scale-95 shadow-2xs"
                 >
                   <Wand2 size={12} />
                   <span>Sugeridos</span>
@@ -367,7 +367,7 @@ export const DistributeIncomeModal: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleDistributeRemainingEvenly}
-                  className="px-2.5 py-1 rounded-xl bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 backdrop-blur-xs border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1 active:scale-95 shadow-2xs"
+                  className="px-2.5 py-1 rounded-xl bg-white/80 dark:bg-slate-800/80 hover:bg-amber-50 dark:hover:bg-slate-800/90 hover:border-amber-200 dark:hover:border-amber-500/30 backdrop-blur-xs border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1 active:scale-95 shadow-2xs"
                 >
                   <Percent size={12} />
                   <span>Dividir Resto</span>
@@ -375,7 +375,7 @@ export const DistributeIncomeModal: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleClearAll}
-                  className="px-2.5 py-1 rounded-xl bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 backdrop-blur-xs border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold active:scale-95 shadow-2xs"
+                  className="px-2.5 py-1 rounded-xl bg-white/80 dark:bg-slate-800/80 hover:bg-rose-50 dark:hover:bg-slate-800/90 hover:border-rose-200 dark:hover:border-rose-500/30 backdrop-blur-xs border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold active:scale-95 shadow-2xs"
                 >
                   Zerar
                 </button>
@@ -396,7 +396,7 @@ export const DistributeIncomeModal: React.FC = () => {
                   return (
                     <div
                       key={sub.id}
-                      className="p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/75 dark:bg-slate-850/75 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 transition-all flex items-center justify-between gap-3 shadow-xs"
+                      className="p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/75 dark:bg-slate-850/75 backdrop-blur-md hover:bg-amber-50/70 dark:hover:bg-slate-800 transition-all flex items-center justify-between gap-3 shadow-xs"
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <div

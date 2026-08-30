@@ -185,7 +185,7 @@ export const SubaccountsListScreen: React.FC = () => {
                       </div>
                       <ChevronRight
                         size={16}
-                        className="text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200 group-hover:translate-x-0.5 transition-all mt-1"
+                        className="text-slate-400 group-hover:text-amber-600 dark:group-hover:text-amber-300 group-hover:translate-x-0.5 transition-all mt-1"
                       />
                     </div>
 

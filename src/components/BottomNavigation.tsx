@@ -118,7 +118,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
               activeTab === 'home'
                 ? 'text-amber-600 dark:text-amber-400 font-bold'
-                : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 font-medium'
+                : 'text-slate-400 dark:text-slate-500 hover:text-amber-600 dark:hover:text-amber-300 font-medium'
             }`}
           >
             <Home size={20} className={activeTab === 'home' ? 'stroke-[2.5]' : ''} />
@@ -134,7 +134,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
               activeTab === 'subaccounts'
                 ? 'text-amber-600 dark:text-amber-400 font-bold'
-                : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 font-medium'
+                : 'text-slate-400 dark:text-slate-500 hover:text-amber-600 dark:hover:text-amber-300 font-medium'
             }`}
           >
             <Layers size={20} className={activeTab === 'subaccounts' ? 'stroke-[2.5]' : ''} />
@@ -168,7 +168,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
               activeTab === 'incomes'
                 ? 'text-amber-600 dark:text-amber-400 font-bold'
-                : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 font-medium'
+                : 'text-slate-400 dark:text-slate-500 hover:text-amber-600 dark:hover:text-amber-300 font-medium'
             }`}
           >
             <Wallet size={20} className={activeTab === 'incomes' ? 'stroke-[2.5]' : ''} />
@@ -184,7 +184,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
               activeTab === 'reports'
                 ? 'text-amber-600 dark:text-amber-400 font-bold'
-                : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 font-medium'
+                : 'text-slate-400 dark:text-slate-500 hover:text-amber-600 dark:hover:text-amber-300 font-medium'
             }`}
           >
             <PieChart size={20} className={activeTab === 'reports' ? 'stroke-[2.5]' : ''} />

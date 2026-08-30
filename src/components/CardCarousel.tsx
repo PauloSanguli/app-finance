@@ -76,7 +76,7 @@ export const CardCarousel: React.FC = () => {
               id="btn-prev-card"
               onClick={handlePrev}
               aria-label="Cartão anterior"
-              className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/80 dark:bg-slate-800/90 backdrop-blur-md shadow-md border border-white/80 dark:border-slate-700/80 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 active:scale-90 transition-all"
+              className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/80 dark:bg-slate-800/90 backdrop-blur-md shadow-md border border-white/80 dark:border-slate-700/80 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-amber-50 dark:hover:bg-slate-800/90 hover:text-amber-700 dark:hover:text-amber-300 active:scale-90 transition-all"
             >
               <ChevronLeft size={18} />
             </button>
@@ -84,7 +84,7 @@ export const CardCarousel: React.FC = () => {
               id="btn-next-card"
               onClick={handleNext}
               aria-label="Próximo cartão"
-              className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/80 dark:bg-slate-800/90 backdrop-blur-md shadow-md border border-white/80 dark:border-slate-700/80 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 active:scale-90 transition-all"
+              className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/80 dark:bg-slate-800/90 backdrop-blur-md shadow-md border border-white/80 dark:border-slate-700/80 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-amber-50 dark:hover:bg-slate-800/90 hover:text-amber-700 dark:hover:text-amber-300 active:scale-90 transition-all"
             >
               <ChevronRight size={18} />
             </button>
@@ -189,7 +189,7 @@ export const CardCarousel: React.FC = () => {
               className={`transition-all duration-300 rounded-full ${
                 selectedCardIndex === idx
                   ? 'w-6 h-2 bg-slate-900 dark:bg-amber-400'
-                  : 'w-2 h-2 bg-slate-300/80 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600'
+                  : 'w-2 h-2 bg-slate-300/80 dark:bg-slate-700 hover:bg-amber-400 dark:hover:bg-amber-500'
               }`}
             />
           ))}
