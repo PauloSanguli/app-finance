@@ -25,6 +25,8 @@ export const AddSubaccountModal: React.FC = () => {
     preselectedAddSubaccountCardId,
     cards,
     addSubaccount,
+    updateSubaccount,
+    editingSubaccount,
   } = useFinance();
 
   const [cardId, setCardId] = useState('');
@@ -36,6 +38,16 @@ export const AddSubaccountModal: React.FC = () => {
 
   useEffect(() => {
     if (isAddSubaccountOpen) {
+      if (editingSubaccount) {
+        setCardId(editingSubaccount.cardId);
+        setName(editingSubaccount.name);
+        setIcon(editingSubaccount.icon);
+        setColor(editingSubaccount.color || '#059669');
+        setDefaultIncomeShare(editingSubaccount.defaultIncomeShare ? String(editingSubaccount.defaultIncomeShare) : '');
+        setNotes(editingSubaccount.notes || '');
+        return;
+      }
+
       if (preselectedAddSubaccountCardId) {
         setCardId(preselectedAddSubaccountCardId);
       } else if (cards.length > 0) {
@@ -47,7 +59,7 @@ export const AddSubaccountModal: React.FC = () => {
       setDefaultIncomeShare('');
       setNotes('');
     }
-  }, [isAddSubaccountOpen, preselectedAddSubaccountCardId, cards]);
+  }, [isAddSubaccountOpen, editingSubaccount, preselectedAddSubaccountCardId, cards]);
 
   if (!isAddSubaccountOpen) return null;
 
@@ -62,14 +74,24 @@ export const AddSubaccountModal: React.FC = () => {
       return;
     }
 
-    addSubaccount({
+    const parsedDefaultIncomeShare = defaultIncomeShare.trim() === '' ? undefined : Number(defaultIncomeShare);
+    const cleanSubaccount = {
       cardId,
       name: name.trim(),
       icon,
       color,
-      defaultIncomeShare: parseFloat(defaultIncomeShare) || undefined,
+      defaultIncomeShare: Number.isFinite(parsedDefaultIncomeShare) ? parsedDefaultIncomeShare : undefined,
       notes: notes.trim() || undefined,
-    });
+    };
+
+    if (editingSubaccount) {
+      updateSubaccount({
+        ...editingSubaccount,
+        ...cleanSubaccount,
+      });
+    } else {
+      addSubaccount(cleanSubaccount);
+    }
 
     setIsAddSubaccountOpen(false);
   };
@@ -101,9 +123,11 @@ export const AddSubaccountModal: React.FC = () => {
                 <Layers size={18} />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-white">Nova Subconta (Envelope)</h3>
+                <h3 className="text-sm font-bold text-white">
+                  {editingSubaccount ? 'Editar Subconta (Envelope)' : 'Nova Subconta (Envelope)'}
+                </h3>
                 <p className="text-[11px] text-amber-200">
-                  Cria uma categoria com saldo independente
+                  {editingSubaccount ? 'Atualiza os detalhes da categoria' : 'Cria uma categoria com saldo independente'}
                 </p>
               </div>
             </div>
@@ -252,7 +276,7 @@ export const AddSubaccountModal: React.FC = () => {
                 className="w-full py-3.5 px-4 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all"
               >
                 <Check size={16} className="stroke-[3]" />
-                <span>Salvar Subconta</span>
+                <span>{editingSubaccount ? 'Salvar Alterações' : 'Salvar Subconta'}</span>
               </button>
             </div>
           </form>
