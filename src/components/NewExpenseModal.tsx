@@ -38,9 +38,11 @@ export const NewExpenseModal: React.FC = () => {
 
   const [amountStr, setAmountStr] = useState<string>('');
   const [selectedCardId, setSelectedCardId] = useState<string>('');
+  const [cashSourceCardId, setCashSourceCardId] = useState<string>('');
   const [selectedSubId, setSelectedSubId] = useState<string>('');
   const [date, setDate] = useState<string>(getTodayDateString());
   const [description, setDescription] = useState<string>('');
+  const [expenseOrigin, setExpenseOrigin] = useState<'CARD' | 'CASH'>('CARD');
   const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   // Initialize selected card and subaccount on modal open
@@ -54,6 +56,7 @@ export const NewExpenseModal: React.FC = () => {
         const foundSub = subaccounts.find((s) => s.id === preselectedExpenseSubaccountId);
         if (foundSub) {
           setSelectedCardId(foundSub.cardId);
+          setCashSourceCardId(foundSub.cardId);
           setSelectedSubId(foundSub.id);
           return;
         }
@@ -65,6 +68,7 @@ export const NewExpenseModal: React.FC = () => {
         (cards.length > 0 ? cards[0].id : '');
 
       setSelectedCardId(initialCardId);
+      setCashSourceCardId(initialCardId);
 
       // Default subaccount to the first subaccount of this card
       if (initialCardId) {
@@ -79,9 +83,11 @@ export const NewExpenseModal: React.FC = () => {
   // Handle card change by user
   const handleCardChange = (cardId: string) => {
     setSelectedCardId(cardId);
+    if (expenseOrigin === 'CASH') {
+      setCashSourceCardId(cardId);
+    }
     const cardSubs = subaccounts.filter((s) => s.cardId === cardId);
     if (cardSubs.length > 0) {
-      // Check if current selected sub is already in this card
       const isAlreadyInCard = cardSubs.some((s) => s.id === selectedSubId);
       if (!isAlreadyInCard) {
         setSelectedSubId(cardSubs[0].id);
@@ -136,11 +142,18 @@ export const NewExpenseModal: React.FC = () => {
       return;
     }
 
+    if (expenseOrigin === 'CASH' && !cashSourceCardId) {
+      alert('Selecciona o cartão de origem do dinheiro em mão.');
+      return;
+    }
+
     addExpense({
       subaccountId: selectedSubId,
       amount: numericAmount,
       date: date || getTodayDateString(),
       description: description.trim(),
+      origin: expenseOrigin,
+      sourceCardId: expenseOrigin === 'CASH' ? cashSourceCardId : undefined,
     });
 
     setShowSuccessToast(true);
@@ -248,11 +261,44 @@ export const NewExpenseModal: React.FC = () => {
               ))}
             </div>
 
-            {/* Passo 1: Seleção do Cartão Bancário */}
+            {/* Passo 1: Origem do Gasto */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                1. Origem do Gasto
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { value: 'CARD', label: 'Cartão/Conta' },
+                  { value: 'CASH', label: 'Dinheiro em Mão' },
+                ].map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => {
+                      setExpenseOrigin(option.value as 'CARD' | 'CASH');
+                      if (option.value === 'CARD') {
+                        setCashSourceCardId(selectedCardId || cards[0]?.id || '');
+                      } else {
+                        setCashSourceCardId(selectedCardId || cards[0]?.id || '');
+                      }
+                    }}
+                    className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all ${
+                      expenseOrigin === option.value
+                        ? 'bg-slate-900 dark:bg-amber-500 text-white dark:text-slate-950 border-slate-900 dark:border-amber-500 shadow-xs'
+                        : 'bg-white/80 dark:bg-slate-800/80 border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-800/90 hover:border-amber-200 dark:hover:border-amber-500/30'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Passo 2: Seleção do Cartão Bancário */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                  1. Seleciona o Cartão Bancário
+                  {expenseOrigin === 'CASH' ? '2. Cartão de Origem da Retirada' : '2. Seleciona o Cartão Bancário'}
                 </label>
                 <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">
                   {cards.length} {cards.length === 1 ? 'cartão' : 'cartões'}
@@ -266,7 +312,7 @@ export const NewExpenseModal: React.FC = () => {
               ) : (
                 <div className="flex gap-2 overflow-x-auto pb-1.5 pt-0.5 no-scrollbar">
                   {cards.map((card) => {
-                    const isSelected = selectedCardId === card.id;
+                    const isSelected = expenseOrigin === 'CASH' ? cashSourceCardId === card.id : selectedCardId === card.id;
                     const bStyle = BANK_STYLES[card.bankId] || BANK_STYLES.OUTRO;
                     const cardBal = getCardBalance(card.id);
                     const subCount = subaccounts.filter((s) => s.cardId === card.id).length;
@@ -275,7 +321,13 @@ export const NewExpenseModal: React.FC = () => {
                       <button
                         type="button"
                         key={card.id}
-                        onClick={() => handleCardChange(card.id)}
+                        onClick={() => {
+                          if (expenseOrigin === 'CASH') {
+                            setCashSourceCardId(card.id);
+                          } else {
+                            handleCardChange(card.id);
+                          }
+                        }}
                         className={`flex-shrink-0 min-w-[145px] p-2.5 rounded-2xl border text-left transition-all relative ${
                           isSelected
                             ? 'bg-slate-900 dark:bg-amber-500 text-white dark:text-slate-950 border-slate-900 dark:border-amber-500 shadow-md ring-2 ring-slate-900/20 dark:ring-amber-500/20 scale-[1.02]'
@@ -293,13 +345,13 @@ export const NewExpenseModal: React.FC = () => {
                             {card.bankId === 'OUTRO' ? card.customBankName || 'Outro' : bStyle.shortName}
                           </span>
                           <span className={`text-[10px] font-mono ${isSelected ? 'text-slate-300 dark:text-slate-800' : 'text-slate-400 dark:text-slate-500'}`}>
-                            ••{card.last4Digits}
+                            ••{card.cardNumber.slice(-4)}
                           </span>
                         </div>
 
                         <div className="space-y-0.5">
                           <span className={`text-[10px] block ${isSelected ? 'text-slate-400 dark:text-slate-800' : 'text-slate-500 dark:text-slate-400'}`}>
-                            Saldo do Cartão
+                            {expenseOrigin === 'CASH' ? 'Retirada' : 'Saldo do Cartão'}
                           </span>
                           <span className="text-xs font-black font-mono block">
                             {hideBalances ? '••••' : formatKwanza(cardBal)}
@@ -319,11 +371,11 @@ export const NewExpenseModal: React.FC = () => {
               )}
             </div>
 
-            {/* Passo 2: Seleção da Subconta (Filtradas pelo Cartão Selecionado) */}
+            {/* Passo 3: Seleção da Subconta (Filtradas pelo Cartão Selecionado) */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                  2. Subconta / Envelope{' '}
+                  3. Subconta / Envelope{' '}
                   {currentCard && (
                     <span className="text-slate-500 dark:text-slate-400 font-normal lowercase">
                       (no {currentCard.bankId === 'OUTRO' ? currentCard.customBankName || 'Outro' : currentCard.bankId})

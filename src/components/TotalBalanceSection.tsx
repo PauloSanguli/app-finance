@@ -3,10 +3,11 @@ import { useFinance } from '../context/FinanceContext';
 import { formatKwanza } from '../utils/formatters';
 
 export const TotalBalanceSection: React.FC = () => {
-  const { getTotalBalance, hideBalances, currentCard, getCardBalance } = useFinance();
+  const { getTotalBalance, hideBalances, currentCard, getCardBalance, getCashOnHandBalance } = useFinance();
 
   const totalBalance = getTotalBalance();
   const cardBalance = currentCard ? getCardBalance(currentCard.id) : 0;
+  const cashOnHand = getCashOnHandBalance();
 
   return (
     <div className="px-5 py-2">
@@ -36,17 +37,25 @@ export const TotalBalanceSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Comparison pill */}
-        {currentCard && (
-          <div className="mt-3 pt-2.5 border-t border-slate-200/60 dark:border-slate-800/80 flex items-center justify-between text-xs">
-            <span className="text-slate-500 dark:text-slate-400 font-medium">
-              No cartão selecionado ({currentCard.bankId === 'OUTRO' ? currentCard.customBankName || 'Outro' : currentCard.bankId}):
-            </span>
-            <span className="font-bold text-slate-800 dark:text-slate-200 font-mono">
-              {hideBalances ? '•••••• Kz' : formatKwanza(cardBalance)}
+        <div className="mt-3 pt-2.5 border-t border-slate-200/60 dark:border-slate-800/80 space-y-2 text-xs">
+          {currentCard && (
+            <div className="flex items-center justify-between">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">
+                No cartão selecionado ({currentCard.bankId === 'OUTRO' ? currentCard.customBankName || 'Outro' : currentCard.bankId}):
+              </span>
+              <span className="font-bold text-slate-800 dark:text-slate-200 font-mono">
+                {hideBalances ? '•••••• Kz' : formatKwanza(cardBalance)}
+              </span>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between">
+            <span className="text-slate-500 dark:text-slate-400 font-medium">Dinheiro em mão:</span>
+            <span className="font-bold text-emerald-700 dark:text-emerald-300 font-mono">
+              {hideBalances ? '•••••• Kz' : formatKwanza(cashOnHand)}
             </span>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

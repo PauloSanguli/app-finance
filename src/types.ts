@@ -64,6 +64,20 @@ export interface Transaction {
   date: string; // ISO string YYYY-MM-DD
   description: string;
   incomeSourceId?: string; // se veio de uma renda específica
+  origin?: 'CARD' | 'CASH';
+  sourceCardId?: string;
+  createdAt: string;
+}
+
+export interface CashMovement {
+  id: string;
+  type: 'ADD' | 'SPEND';
+  amount: number;
+  sourceCardId?: string;
+  subaccountId?: string;
+  cardId?: string;
+  date: string;
+  description: string;
   createdAt: string;
 }
 

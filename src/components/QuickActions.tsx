@@ -4,6 +4,7 @@ import {
   PieChart,
   ArrowDownLeft,
   ArrowUpRight,
+  Wallet,
 } from 'lucide-react';
 import { useFinance } from '../context/FinanceContext';
 
@@ -11,6 +12,7 @@ export const QuickActions: React.FC = () => {
   const {
     openNewExpenseModal,
     openDistributeIncomeModal,
+    openCashOnHandModal,
     setActiveTab,
   } = useFinance();
 
@@ -32,6 +34,15 @@ export const QuickActions: React.FC = () => {
       iconColor: 'text-emerald-500 dark:text-emerald-400',
       iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/20',
       onClick: () => openDistributeIncomeModal(),
+    },
+    {
+      id: 'quick-action-cash',
+      label: 'Dinheiro em Mão',
+      sublabel: 'Retirar cash',
+      icon: Wallet,
+      iconColor: 'text-emerald-500 dark:text-emerald-400',
+      iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/20',
+      onClick: () => openCashOnHandModal(),
     },
     {
       id: 'quick-action-subaccounts',

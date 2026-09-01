@@ -13,6 +13,7 @@ import {
   ArrowDownLeft,
   ArrowUpRight,
   Smartphone,
+  Banknote,
   Monitor,
 } from 'lucide-react';
 import { useFinance } from '../context/FinanceContext';
@@ -36,6 +37,7 @@ export const Header: React.FC<HeaderProps> = ({
     toggleDarkMode,
     openNewExpenseModal,
     openDistributeIncomeModal,
+    openCashOnHandModal,
     subaccounts,
     incomeSources,
   } = useFinance();
@@ -137,6 +139,15 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <ArrowUpRight size={15} className="stroke-[2.5]" />
                 <span>+ Distribuir Renda</span>
+              </button>
+
+              <button
+                id="btn-desktop-cash-on-hand"
+                onClick={() => openCashOnHandModal()}
+                className="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs active:scale-95 transition-all"
+              >
+                <Banknote size={15} className="stroke-[2.5]" />
+                <span>+ Dinheiro em Mão</span>
               </button>
             </div>
           )}

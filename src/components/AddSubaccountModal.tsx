@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Check, Layers, Sparkles, CreditCard } from 'lucide-react';
 import { useFinance } from '../context/FinanceContext';
 import { CategoryIconName } from '../types';
-import { CATEGORY_ICON_MAP, getCategoryIcon, BANK_STYLES } from '../utils/formatters';
+import { CATEGORY_ICON_MAP, getCategoryIcon, BANK_STYLES, normalizeMoneyInput } from '../utils/formatters';
 
 const COLOR_PRESETS = [
   '#0284c7', // Sky blue
@@ -74,7 +74,7 @@ export const AddSubaccountModal: React.FC = () => {
       return;
     }
 
-    const parsedDefaultIncomeShare = defaultIncomeShare.trim() === '' ? undefined : Number(defaultIncomeShare);
+    const parsedDefaultIncomeShare = defaultIncomeShare.trim() === '' ? undefined : Number(normalizeMoneyInput(defaultIncomeShare)) || undefined;
     const cleanSubaccount = {
       cardId,
       name: name.trim(),
@@ -243,10 +243,11 @@ export const AddSubaccountModal: React.FC = () => {
                 Valor Sugerido para Rendas (Kz / Mês)
               </label>
               <input
-                type="number"
-                placeholder="Ex: 50000"
+                type="text"
+                inputMode="decimal"
+                placeholder="Ex: 50000 ou 50000,00"
                 value={defaultIncomeShare}
-                onChange={(e) => setDefaultIncomeShare(e.target.value)}
+                onChange={(e) => setDefaultIncomeShare(normalizeMoneyInput(e.target.value) || '')}
                 className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-850 text-slate-900 dark:text-white focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none font-mono shadow-xs"
               />
               <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">

@@ -7,6 +7,7 @@ import { QuickActions } from './components/QuickActions';
 import { CardDetailModal } from './components/CardDetailModal';
 import { SubaccountDetailModal } from './components/SubaccountDetailModal';
 import { NewExpenseModal } from './components/NewExpenseModal';
+import { CashOnHandModal } from './components/CashOnHandModal';
 import { DistributeIncomeModal } from './components/DistributeIncomeModal';
 import { AddCardModal } from './components/AddCardModal';
 import { AddSubaccountModal } from './components/AddSubaccountModal';
@@ -263,6 +264,7 @@ const MainAppContainer: React.FC = () => {
         <CardDetailModal />
         <SubaccountDetailModal />
         <NewExpenseModal />
+        <CashOnHandModal />
         <DistributeIncomeModal />
         <AddCardModal />
         <AddSubaccountModal />

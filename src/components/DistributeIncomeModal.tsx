@@ -21,6 +21,7 @@ import {
   getTodayDateString,
   getCategoryIcon,
   BANK_STYLES,
+  normalizeMoneyInput,
 } from '../utils/formatters';
 
 export const DistributeIncomeModal: React.FC = () => {
@@ -112,7 +113,7 @@ export const DistributeIncomeModal: React.FC = () => {
     }
   };
 
-  const totalReceived = parseFloat(totalAmountStr) || 0;
+  const totalReceived = Number(normalizeMoneyInput(totalAmountStr)) || 0;
   const selectedCard = cards.find((card) => card.id === selectedCardId);
   const filteredSubaccounts = subaccounts.filter((sub) => sub.cardId === selectedCardId);
 
@@ -142,7 +143,8 @@ export const DistributeIncomeModal: React.FC = () => {
   }, [remainingToDistribute, totalReceived, confettiFired, isDistributeIncomeOpen]);
 
   const handleSubaccountAmountChange = (subId: string, valStr: string) => {
-    const cleanNum = parseFloat(valStr) || 0;
+    const normalized = normalizeMoneyInput(valStr);
+    const cleanNum = normalized === '' ? 0 : Number(normalized) || 0;
     setDistributions((prev) => ({
       ...prev,
       [subId]: cleanNum,
@@ -337,10 +339,11 @@ export const DistributeIncomeModal: React.FC = () => {
               </label>
               <div className="relative">
                 <input
-                  type="number"
-                  placeholder="Ex: 850000"
+                  type="text"
+                  inputMode="decimal"
+                  placeholder="Ex: 850000 ou 2728354,52"
                   value={totalAmountStr}
-                  onChange={(e) => setTotalAmountStr(e.target.value)}
+                  onChange={(e) => setTotalAmountStr(normalizeMoneyInput(e.target.value) || '')}
                   className="w-full text-2xl font-black px-3.5 py-2.5 rounded-xl bg-white/90 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono shadow-inner"
                 />
                 <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 dark:text-slate-500">
@@ -481,7 +484,8 @@ export const DistributeIncomeModal: React.FC = () => {
                         <div className="w-32 shrink-0">
                           <div className="relative">
                             <input
-                              type="number"
+                              type="text"
+                              inputMode="decimal"
                               placeholder="0"
                               value={distributions[sub.id] ?? ''}
                               onChange={(e) =>
