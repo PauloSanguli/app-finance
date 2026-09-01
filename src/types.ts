@@ -64,8 +64,9 @@ export interface Transaction {
   date: string; // ISO string YYYY-MM-DD
   description: string;
   incomeSourceId?: string; // se veio de uma renda específica
-  origin?: 'CARD' | 'CASH';
+  origin?: 'CARD' | 'CASH' | 'TRANSFER';
   sourceCardId?: string;
+  targetCardId?: string;
   createdAt: string;
 }
 
