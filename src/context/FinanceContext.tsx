@@ -49,6 +49,9 @@ interface FinanceContextType {
   isCashOnHandOpen: boolean;
   setIsCashOnHandOpen: (open: boolean) => void;
   openCashOnHandModal: () => void;
+  isTransferBetweenCardsOpen: boolean;
+  setIsTransferBetweenCardsOpen: (open: boolean) => void;
+  openTransferBetweenCardsModal: () => void;
   isAddSubaccountOpen: boolean;
   setIsAddSubaccountOpen: (open: boolean) => void;
   preselectedAddSubaccountCardId: string | null;
@@ -104,6 +107,14 @@ interface FinanceContextType {
   spendCashFromHand: (data: {
     subaccountId: string;
     cardId: string;
+    amount: number;
+    date: string;
+    description?: string;
+  }) => string;
+
+  transferBetweenCards: (data: {
+    fromCardId: string;
+    toCardId: string;
     amount: number;
     date: string;
     description?: string;
@@ -268,6 +279,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [preselectedIncomeSourceId, setPreselectedIncomeSourceId] = useState<string | null>(null);
   const [isAddCardOpen, setIsAddCardOpen] = useState<boolean>(false);
   const [isCashOnHandOpen, setIsCashOnHandOpen] = useState<boolean>(false);
+  const [isTransferBetweenCardsOpen, setIsTransferBetweenCardsOpen] = useState<boolean>(false);
   const [isAddSubaccountOpen, setIsAddSubaccountOpen] = useState<boolean>(false);
   const [preselectedAddSubaccountCardId, setPreselectedAddSubaccountCardId] = useState<string | null>(null);
   const [editingSubaccount, setEditingSubaccount] = useState<Subaccount | null>(null);
@@ -297,12 +309,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const getCardBalance = (cardId: string): number => {
-    const cardSubaccountIds = subaccounts
-      .filter((s) => s.cardId === cardId)
-      .map((s) => s.id);
-    
     return transactions
-      .filter((t) => cardSubaccountIds.includes(t.subaccountId) && t.origin !== 'CASH')
+      .filter((t) => t.cardId === cardId && t.origin !== 'CASH')
       .reduce((acc, t) => {
         if (t.type === 'INCOME') return acc + t.amount;
         if (t.type === 'EXPENSE') return acc - t.amount;
@@ -412,6 +420,10 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setIsCashOnHandOpen(true);
   };
 
+  const openTransferBetweenCardsModal = () => {
+    setIsTransferBetweenCardsOpen(true);
+  };
+
   const openAddSubaccountModal = (cardId?: string, subaccount?: Subaccount) => {
     setPreselectedAddSubaccountCardId(cardId || currentCard?.id || null);
     setEditingSubaccount(subaccount || null);
@@ -441,10 +453,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const deleteCard = (cardId: string) => {
     setCards((prev) => prev.filter((c) => c.id !== cardId));
-    // Remove related subaccounts & transactions
     const subIdsToRemove = subaccounts.filter((s) => s.cardId === cardId).map((s) => s.id);
     setSubaccounts((prev) => prev.filter((s) => s.cardId !== cardId));
-    setTransactions((prev) => prev.filter((t) => !subIdsToRemove.includes(t.subaccountId)));
+    setTransactions((prev) => prev.filter((t) => t.cardId !== cardId && !subIdsToRemove.includes(t.subaccountId)));
     if (cardDetailId === cardId) setCardDetailId(null);
   };
 
@@ -597,6 +608,62 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return txId;
   };
 
+  const transferBetweenCards = ({
+    fromCardId,
+    toCardId,
+    amount,
+    date,
+    description,
+  }: {
+    fromCardId: string;
+    toCardId: string;
+    amount: number;
+    date: string;
+    description?: string;
+  }): string => {
+    if (!fromCardId || !toCardId || fromCardId === toCardId) {
+      throw new Error('Selecione dois cartões diferentes para transferir o dinheiro.');
+    }
+
+    if (amount <= 0) {
+      throw new Error('O valor da transferência deve ser maior que zero.');
+    }
+
+    const txDate = date || getTodayDateString();
+    const transferNote = description?.trim() || 'Transferência entre cartões';
+
+    const sourceTx: Transaction = {
+      id: `tx-transfer-out-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+      subaccountId: `transfer-${fromCardId}`,
+      cardId: fromCardId,
+      type: 'EXPENSE',
+      amount,
+      date: txDate,
+      description: `${transferNote} (saída)`,
+      origin: 'TRANSFER',
+      sourceCardId: fromCardId,
+      targetCardId: toCardId,
+      createdAt: new Date().toISOString(),
+    };
+
+    const targetTx: Transaction = {
+      id: `tx-transfer-in-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+      subaccountId: `transfer-${toCardId}`,
+      cardId: toCardId,
+      type: 'INCOME',
+      amount,
+      date: txDate,
+      description: `${transferNote} (entrada)`,
+      origin: 'TRANSFER',
+      sourceCardId: fromCardId,
+      targetCardId: toCardId,
+      createdAt: new Date().toISOString(),
+    };
+
+    setTransactions((prev) => [sourceTx, targetTx, ...prev]);
+    return sourceTx.id;
+  };
+
   const distributeIncome = ({
     totalAmount,
     date,
@@ -702,6 +769,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         isCashOnHandOpen,
         setIsCashOnHandOpen,
         openCashOnHandModal,
+        isTransferBetweenCardsOpen,
+        setIsTransferBetweenCardsOpen,
+        openTransferBetweenCardsModal,
         isAddSubaccountOpen,
         setIsAddSubaccountOpen,
         preselectedAddSubaccountCardId,
@@ -728,6 +798,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         addExpense,
         addCashToHand,
         spendCashFromHand,
+        transferBetweenCards,
         distributeIncome,
         deleteTransaction,
         addIncomeSource,

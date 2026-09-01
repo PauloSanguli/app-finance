@@ -5,6 +5,7 @@ import {
   ArrowDownLeft,
   ArrowUpRight,
   Wallet,
+  ArrowRightLeft,
 } from 'lucide-react';
 import { useFinance } from '../context/FinanceContext';
 
@@ -13,6 +14,7 @@ export const QuickActions: React.FC = () => {
     openNewExpenseModal,
     openDistributeIncomeModal,
     openCashOnHandModal,
+    openTransferBetweenCardsModal,
     setActiveTab,
   } = useFinance();
 
@@ -43,6 +45,15 @@ export const QuickActions: React.FC = () => {
       iconColor: 'text-emerald-500 dark:text-emerald-400',
       iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/20',
       onClick: () => openCashOnHandModal(),
+    },
+    {
+      id: 'quick-action-transfer',
+      label: 'Transferir',
+      sublabel: 'Entre cartões',
+      icon: ArrowRightLeft,
+      iconColor: 'text-indigo-500 dark:text-indigo-400',
+      iconBg: 'bg-indigo-500/10 dark:bg-indigo-500/20 border border-indigo-500/20',
+      onClick: () => openTransferBetweenCardsModal(),
     },
     {
       id: 'quick-action-subaccounts',

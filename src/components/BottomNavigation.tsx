@@ -7,6 +7,7 @@ import {
   Plus,
   ArrowDownLeft,
   ArrowUpRight,
+  ArrowRightLeft,
   X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -25,6 +26,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
     setActiveTab,
     openNewExpenseModal,
     openDistributeIncomeModal,
+    openTransferBetweenCardsModal,
   } = useFinance();
 
   const [isFabMenuOpen, setIsFabMenuOpen] = useState(false);
@@ -92,6 +94,27 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                   </span>
                   <span className="text-[10px] text-slate-500 dark:text-slate-400">
                     Repartir salário pelos envelopes
+                  </span>
+                </div>
+              </button>
+
+              <button
+                id="btn-fab-transfer-card"
+                onClick={() => {
+                  setIsFabMenuOpen(false);
+                  openTransferBetweenCardsModal();
+                }}
+                className="w-full p-3 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/40 hover:bg-indigo-100/90 dark:hover:bg-indigo-900/50 backdrop-blur-md border border-indigo-200/80 dark:border-indigo-800/60 flex items-center gap-3 text-left transition-all active:scale-95 shadow-xs"
+              >
+                <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold shadow-xs">
+                  <ArrowRightLeft size={20} className="stroke-[2.5]" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-slate-900 dark:text-white block">
+                    Transferir entre Cartões
+                  </span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                    Mover saldo de um para outro
                   </span>
                 </div>
               </button>
