@@ -126,6 +126,30 @@ export function getCategoryIcon(iconName: CategoryIconName): LucideIcon {
   return CATEGORY_ICON_MAP[iconName]?.icon || CircleDollarSign;
 }
 
+export function normalizeMoneyInput(raw: string): string {
+  if (!raw) return '';
+
+  const cleaned = raw.replace(/\s+/g, '').replace(/[^\d,.-]/g, '');
+  if (!cleaned) return '';
+
+  const lastComma = cleaned.lastIndexOf(',');
+  const lastDot = cleaned.lastIndexOf('.');
+  const decimalIndex = Math.max(lastComma, lastDot);
+
+  if (decimalIndex === -1) {
+    return cleaned;
+  }
+
+  const integerPart = cleaned.slice(0, decimalIndex).replace(/[.,]/g, '');
+  const decimalPart = cleaned.slice(decimalIndex + 1).replace(/[.,]/g, '');
+
+  if (!integerPart && !decimalPart) {
+    return '';
+  }
+
+  return `${integerPart}.${decimalPart}`;
+}
+
 export function formatKwanza(amount: number, showDecimals = false): string {
   const isNegative = amount < 0;
   const absAmount = Math.abs(amount);

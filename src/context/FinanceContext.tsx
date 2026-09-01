@@ -6,6 +6,7 @@ import {
   IncomeSource,
   ActiveTab,
   CategoryIconName,
+  CashMovement,
 } from '../types';
 import { getTodayDateString } from '../utils/formatters';
 import { supabase, hasSupabaseConfig } from '../utils/supabase';
@@ -15,6 +16,7 @@ interface FinanceContextType {
   cards: BankCard[];
   subaccounts: Subaccount[];
   transactions: Transaction[];
+  cashMovements: CashMovement[];
   incomeSources: IncomeSource[];
   activeTab: ActiveTab;
   setActiveTab: (tab: ActiveTab) => void;
@@ -44,6 +46,9 @@ interface FinanceContextType {
   openDistributeIncomeModal: (incomeSourceId?: string) => void;
   isAddCardOpen: boolean;
   setIsAddCardOpen: (open: boolean) => void;
+  isCashOnHandOpen: boolean;
+  setIsCashOnHandOpen: (open: boolean) => void;
+  openCashOnHandModal: () => void;
   isAddSubaccountOpen: boolean;
   setIsAddSubaccountOpen: (open: boolean) => void;
   preselectedAddSubaccountCardId: string | null;
@@ -57,6 +62,7 @@ interface FinanceContextType {
   // Calculations
   getSubaccountBalance: (subaccountId: string) => number;
   getCardBalance: (cardId: string) => number;
+  getCashOnHandBalance: () => number;
   getTotalBalance: () => number;
   getSubaccountTransactions: (subaccountId: string) => Transaction[];
   getCardTransactions: (cardId: string) => Transaction[];
@@ -84,6 +90,23 @@ interface FinanceContextType {
     amount: number;
     date: string;
     description: string;
+    origin?: 'CARD' | 'CASH';
+    sourceCardId?: string;
+  }) => string;
+
+  addCashToHand: (data: {
+    sourceCardId: string;
+    amount: number;
+    date: string;
+    description?: string;
+  }) => string;
+
+  spendCashFromHand: (data: {
+    subaccountId: string;
+    cardId: string;
+    amount: number;
+    date: string;
+    description?: string;
   }) => string;
 
   distributeIncome: (data: {
@@ -143,8 +166,24 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [cards, setCards] = useState<BankCard[]>([]);
   const [subaccounts, setSubaccounts] = useState<Subaccount[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [cashMovements, setCashMovements] = useState<CashMovement[]>([]);
   const [incomeSources, setIncomeSources] = useState<IncomeSource[]>([]);
   const [hideBalances, setHideBalances] = useState<boolean>(false);
+
+  useEffect(() => {
+    try {
+      const storedCash = localStorage.getItem('financas-cash-movements');
+      if (storedCash) {
+        setCashMovements(JSON.parse(storedCash) as CashMovement[]);
+      }
+    } catch {
+      console.warn('Failed to load cash movements from local storage');
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('financas-cash-movements', JSON.stringify(cashMovements));
+  }, [cashMovements]);
 
   const [supabaseInitialized, setSupabaseInitialized] = useState(false);
 
@@ -228,6 +267,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [isDistributeIncomeOpen, setIsDistributeIncomeOpen] = useState<boolean>(false);
   const [preselectedIncomeSourceId, setPreselectedIncomeSourceId] = useState<string | null>(null);
   const [isAddCardOpen, setIsAddCardOpen] = useState<boolean>(false);
+  const [isCashOnHandOpen, setIsCashOnHandOpen] = useState<boolean>(false);
   const [isAddSubaccountOpen, setIsAddSubaccountOpen] = useState<boolean>(false);
   const [preselectedAddSubaccountCardId, setPreselectedAddSubaccountCardId] = useState<string | null>(null);
   const [editingSubaccount, setEditingSubaccount] = useState<Subaccount | null>(null);
@@ -262,7 +302,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       .map((s) => s.id);
     
     return transactions
-      .filter((t) => cardSubaccountIds.includes(t.subaccountId))
+      .filter((t) => cardSubaccountIds.includes(t.subaccountId) && t.origin !== 'CASH')
       .reduce((acc, t) => {
         if (t.type === 'INCOME') return acc + t.amount;
         if (t.type === 'EXPENSE') return acc - t.amount;
@@ -270,12 +310,24 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }, 0);
   };
 
-  const getTotalBalance = (): number => {
-    return transactions.reduce((acc, t) => {
-      if (t.type === 'INCOME') return acc + t.amount;
-      if (t.type === 'EXPENSE') return acc - t.amount;
+  const getCashOnHandBalance = (): number => {
+    return cashMovements.reduce((acc, m) => {
+      if (m.type === 'ADD') return acc + m.amount;
+      if (m.type === 'SPEND') return acc - m.amount;
       return acc;
     }, 0);
+  };
+
+  const getTotalBalance = (): number => {
+    const cardAndEnvelopeNet = transactions
+      .filter((t) => t.origin !== 'CASH')
+      .reduce((acc, t) => {
+        if (t.type === 'INCOME') return acc + t.amount;
+        if (t.type === 'EXPENSE') return acc - t.amount;
+        return acc;
+      }, 0);
+
+    return cardAndEnvelopeNet + getCashOnHandBalance();
   };
 
   const getSubaccountTransactions = (subaccountId: string): Transaction[] => {
@@ -356,6 +408,10 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setIsDistributeIncomeOpen(true);
   };
 
+  const openCashOnHandModal = () => {
+    setIsCashOnHandOpen(true);
+  };
+
   const openAddSubaccountModal = (cardId?: string, subaccount?: Subaccount) => {
     setPreselectedAddSubaccountCardId(cardId || currentCard?.id || null);
     setEditingSubaccount(subaccount || null);
@@ -418,11 +474,15 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     amount,
     date,
     description,
+    origin = 'CARD',
+    sourceCardId,
   }: {
     subaccountId: string;
     amount: number;
     date: string;
     description: string;
+    origin?: 'CARD' | 'CASH';
+    sourceCardId?: string;
   }): string => {
     const sub = subaccounts.find((s) => s.id === subaccountId);
     if (!sub) throw new Error('Subconta não encontrada');
@@ -436,10 +496,104 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       amount,
       date: date || getTodayDateString(),
       description: description.trim() || `Gasto em ${sub.name}`,
+      origin,
+      sourceCardId: sourceCardId || sub.cardId,
       createdAt: new Date().toISOString(),
     };
 
     setTransactions((prev) => [newTx, ...prev]);
+
+    if (origin === 'CASH') {
+      const cashEntryId = `cash-spend-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+      const cashEntry: CashMovement = {
+        id: cashEntryId,
+        type: 'SPEND',
+        amount,
+        sourceCardId: sourceCardId || sub.cardId,
+        subaccountId,
+        cardId: sub.cardId,
+        date: date || getTodayDateString(),
+        description: description.trim() || `Gasto em ${sub.name}`,
+        createdAt: new Date().toISOString(),
+      };
+      setCashMovements((prev) => [cashEntry, ...prev]);
+    }
+
+    return txId;
+  };
+
+  const addCashToHand = ({
+    sourceCardId,
+    amount,
+    date,
+    description = 'Retirada para dinheiro em mão',
+  }: {
+    sourceCardId: string;
+    amount: number;
+    date: string;
+    description?: string;
+  }): string => {
+    const cashId = `cash-add-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+    const newMovement: CashMovement = {
+      id: cashId,
+      type: 'ADD',
+      amount,
+      sourceCardId,
+      date: date || getTodayDateString(),
+      description: description.trim() || 'Retirada para dinheiro em mão',
+      createdAt: new Date().toISOString(),
+    };
+
+    setCashMovements((prev) => [newMovement, ...prev]);
+    return cashId;
+  };
+
+  const spendCashFromHand = ({
+    subaccountId,
+    cardId,
+    amount,
+    date,
+    description,
+  }: {
+    subaccountId: string;
+    cardId: string;
+    amount: number;
+    date: string;
+    description?: string;
+  }): string => {
+    const txId = `tx-cash-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+    const cashId = `cash-spend-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+    const txDate = date || getTodayDateString();
+    const sub = subaccounts.find((s) => s.id === subaccountId);
+    const entryDescription = description?.trim() || (sub ? `Gasto em ${sub.name}` : 'Gasto em dinheiro em mão');
+
+    const newTx: Transaction = {
+      id: txId,
+      subaccountId,
+      cardId,
+      type: 'EXPENSE',
+      amount,
+      date: txDate,
+      description: entryDescription,
+      origin: 'CASH',
+      sourceCardId: cardId,
+      createdAt: new Date().toISOString(),
+    };
+
+    const newMovement: CashMovement = {
+      id: cashId,
+      type: 'SPEND',
+      amount,
+      sourceCardId: cardId,
+      subaccountId,
+      cardId,
+      date: txDate,
+      description: entryDescription,
+      createdAt: new Date().toISOString(),
+    };
+
+    setTransactions((prev) => [newTx, ...prev]);
+    setCashMovements((prev) => [newMovement, ...prev]);
     return txId;
   };
 
@@ -519,6 +673,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         cards,
         subaccounts,
         transactions,
+        cashMovements,
         incomeSources,
         activeTab,
         setActiveTab,
@@ -544,6 +699,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         openDistributeIncomeModal,
         isAddCardOpen,
         setIsAddCardOpen,
+        isCashOnHandOpen,
+        setIsCashOnHandOpen,
+        openCashOnHandModal,
         isAddSubaccountOpen,
         setIsAddSubaccountOpen,
         preselectedAddSubaccountCardId,
@@ -555,6 +713,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         openAddIncomeSourceModal,
         getSubaccountBalance,
         getCardBalance,
+        getCashOnHandBalance,
         getTotalBalance,
         getSubaccountTransactions,
         getCardTransactions,
@@ -567,6 +726,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         updateSubaccount,
         deleteSubaccount,
         addExpense,
+        addCashToHand,
+        spendCashFromHand,
         distributeIncome,
         deleteTransaction,
         addIncomeSource,

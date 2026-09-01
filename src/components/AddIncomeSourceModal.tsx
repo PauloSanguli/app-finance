@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Check, Wallet, Calendar } from 'lucide-react';
 import { useFinance } from '../context/FinanceContext';
 import { IncomeFrequency, IncomeSource } from '../types';
+import { normalizeMoneyInput } from '../utils/formatters';
 
 export const AddIncomeSourceModal: React.FC = () => {
   const {
@@ -45,7 +46,7 @@ export const AddIncomeSourceModal: React.FC = () => {
       alert('Por favor, indica o nome da fonte de renda.');
       return;
     }
-    const num = parseFloat(defaultAmount);
+    const num = Number(normalizeMoneyInput(defaultAmount)) || 0;
     if (!num || num <= 0) {
       alert('Por favor, indica um valor habitual válido.');
       return;
@@ -133,10 +134,11 @@ export const AddIncomeSourceModal: React.FC = () => {
                 Valor Habitual (Kz)
               </label>
               <input
-                type="number"
-                placeholder="Ex: 850000"
+                type="text"
+                inputMode="decimal"
+                placeholder="Ex: 850000 ou 850000,00"
                 value={defaultAmount}
-                onChange={(e) => setDefaultAmount(e.target.value)}
+                onChange={(e) => setDefaultAmount(normalizeMoneyInput(e.target.value) || '')}
                 className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-850 text-slate-900 dark:text-white focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none font-mono font-bold shadow-xs"
               />
             </div>
